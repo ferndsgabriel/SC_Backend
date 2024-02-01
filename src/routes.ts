@@ -1,6 +1,11 @@
 import {Router} from "express"
 import multer from "multer";
-import uploadconfig from "./config/multer";
+import uploadMiddlewareInstance from "./Middlewares/FirebaseMiddlwere";
+
+const Multer = multer({
+    storage:multer.memoryStorage()
+});
+
 // adm import ---------------------------------------------------------------
 import { CreateAdmController } from "./Controllers/adm/CreateAdmController";
 import { AuthAdmController } from "./Controllers/adm/AuthAdmController";
@@ -56,7 +61,6 @@ import { UserMiddlewares } from "./Middlewares/UserMiddlewares";
 
 
 const router = Router();
-const upload = multer(uploadconfig.upload())
 
 // routes adm ---------------------------------------------------------------------
 router.post ("/adm", new CreateAdmController().handle);
@@ -89,7 +93,7 @@ router.put("/recovery", new RecoveryPassUserController().handle);
 router.post("/recoveryemail", new RecoveryEmailController().handle);
 router.get("/me", UserMiddlewares, new DetailUserController().handle );
 router.put("/password", UserMiddlewares, new ChangePassUserController().handle);
-router.put("/photo", UserMiddlewares, upload.single('file'),new PhotoUserController().handle);
+router.put("/photo", UserMiddlewares, Multer.single('image'), uploadMiddlewareInstance, new PhotoUserController().handle);
 router.put('/phone', UserMiddlewares, new ChangePhoneController().handle);
 router.put('/photodelete', UserMiddlewares, new DeletePhotoUserController().handle);
 router.delete('/account', UserMiddlewares, new DeleteAccountUserController().handle);
