@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Adm {
+  id                    String       @id @default(uuid())
+  email                 String       @unique
+  pass                  String
+  name                  String
+  lastname              String
+  phone_number          String        @unique
+
+  codRecovery           String? 
+  codDate               DateTime?       @default(now())
+  countCod              Int             @default(0)
+  dateChangePass        DateTime        @default(now()) 
+  token                 Token []
+  createDate            DateTime        @default(now())
+}
+
+model Tower{
+  id                    String         @id @default(uuid())
+  numberTower           String         
+  createDate            DateTime       @default(now())
+  apartment             Apartment[]
+}
+
+model Apartment {
+  id                    String         @id @default(uuid())
+  numberApt             String        
+  payment               Boolean        @default(true)
+  payday                DateTime?      @default(now())
+  createDate            DateTime       @default(now())
+  tower                 Tower          @relation(fields: [tower_id], references: [id])
+  tower_id              String
+  Reservations          Reservation[] 
+  user                  User[]
+  taxed                 Taxed[] 
+}
+
+model User {
+  cpf                   String          @unique
+  id                    String          @id @default(uuid())
+  name                  String
+  lastname              String
+  email                 String          @unique
+  pass                  String
+  photo                 String?         @unique      
+  accountStatus         Boolean?    
+  phone_number          String          @unique
+  apartment             Apartment       @relation(fields: [apartment_id], references: [id])
+  apartment_id          String
+  waitingList           WaitingList[]
+
+  codRecovery           String? 
+  codDate               DateTime?       @default(now())
+  countCod              Int             @default(0)
+  dateChangePass        DateTime        @default(now()) 
+  token                 Token []
+  createDate            DateTime        @default(now())
+}
+
+model Reservation {
+  id                    String          @id @default(uuid())
+  guest                 String?
+  reservationStatus     Boolean?
+  cleaningService       Boolean     
+  date                  Int
+  start                 Int
+  finish                Int
+  name                  String
+  email                 String
+  phone_number          String
+  apartment             Apartment       @relation(fields: [apartment_id], references: [id])
+  apartment_id          String
+  createDate            DateTime        @default(now())
+}
+
+
+model Taxed {
+  id                     String          @id @default(uuid())
+  apartment              Apartment       @relation(fields: [apartment_id], references: [id])
+  apartment_id           String
+  name                   String
+  email                  String
+  phone_number           String
+  dateGuest              DateTime
+  dateCancellation       DateTime        @default(now())      
+  createDate             DateTime        @default(now())
+}
+
+model WaitingList {
+  id                     String           @id @default(uuid())
+  user                   User             @relation(fields: [user_id], references: [id])      
+  user_id                String
+  date                   Int
+}
+
+model Token {
+  id                     String           @id
+  user_id                String?
+  adm_id                 String?
+  user                   User?            @relation(fields: [user_id], references: [id])
+  adm                    Adm?             @relation(fields: [adm_id], references: [id])
+  createDate             DateTime         @default(now())
+}
+
+
+
