@@ -6,6 +6,7 @@ const Multer = multer({
     storage:multer.memoryStorage()
 });
 
+
 // adm import ---------------------------------------------------------------
 import { CreateAdmController } from "./Controllers/adm/CreateAdmController";
 import { AuthAdmController } from "./Controllers/adm/AuthAdmController";
@@ -28,6 +29,7 @@ import { ListTowersUserController } from "./Controllers/user/ListTowersUserContr
 import { DeleteTowerAdmController } from "./Controllers/adm/DeleteTowerAdmController";
 import { EditTowerAdmController } from "./Controllers/adm/EditTowerAdmController";
 import { DeleteAptAdmController } from "./Controllers/adm/DeleteAptAdmController";
+import { ExcelAdmController, upload } from "./Controllers/adm/ExcelAdmController";
 // user import ---------------------------------------------------------------
 import { ListAptUserController } from "./Controllers/user/ListAptUserController";
 import { CreateUserController } from "./Controllers/user/CreateUserController";
@@ -83,6 +85,7 @@ router.delete ("/adm/account", AdmMiddlewares, new DeleteAccountController().han
 router.post ("/adm/towers", AdmMiddlewares, new  CreateTowerAdmController().handle);
 router.delete ("/adm/towers", AdmMiddlewares, new DeleteTowerAdmController().handle);
 router.put ("/adm/towers", AdmMiddlewares, new EditTowerAdmController().handle);
+router.post("/adm/excel",  upload.single('excel'), new ExcelAdmController().handle);
 // routes user ---------------------------------------------------------------------
 router.get ("/towers", new ListTowersUserController().handle);
 router.get("/apts", new ListAptUserController().handle);
