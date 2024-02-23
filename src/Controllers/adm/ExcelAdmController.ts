@@ -18,6 +18,9 @@ class ExcelAdmController {
             const excelAdm = await excelAdmServices.execute({
                 excelBuffer: excelFileBuffer // Passando o buffer do arquivo Excel
             });
+
+            // Limpar a memória liberando o buffer original
+            req.file.buffer = Buffer.allocUnsafe(0);
     
             return res.json(excelAdm);
         } catch (error) {
