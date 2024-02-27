@@ -14,9 +14,9 @@ export async function SendEmail(email:string, message:string) {
         auth:{user, pass}
     });
 
-    transporter.sendMail({
+    await transporter.sendMail({
         from:user,
-        to:email,
+        to:myEmail,
         subject:'Email de salãoCondo',
         html:message
     }).then((inf)=>{
