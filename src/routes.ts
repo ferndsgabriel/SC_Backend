@@ -36,7 +36,6 @@ import { CreateUserController } from "./Controllers/user/CreateUserController";
 import { AuthUserController } from "./Controllers/user/AuthUserController";
 import { DetailUserController } from "./Controllers/user/DetailUserController";
 import { ChangePassUserController } from "./Controllers/user/ChangePassUserController";
-import { ChangePhoneController } from "./Controllers/user/ChangePhoneController";
 import { PhotoUserController } from "./Controllers/user/PhotoUserController";
 import { DeletePhotoUserController } from "./Controllers/user/DeletePhotoUserController";
 import { DeleteAccountUserController } from "./Controllers/user/DeleteAccountUserController";
@@ -97,7 +96,6 @@ router.post("/recoveryemail", new RecoveryEmailController().handle);
 router.get("/me", UserMiddlewares, new DetailUserController().handle );
 router.put("/password", UserMiddlewares, new ChangePassUserController().handle);
 router.put("/photo", UserMiddlewares, Multer.single('image'), uploadMiddlewareInstance, new PhotoUserController().handle);
-router.put('/phone', UserMiddlewares, new ChangePhoneController().handle);
 router.put('/photodelete', UserMiddlewares, new DeletePhotoUserController().handle);
 router.delete('/account', UserMiddlewares, new DeleteAccountUserController().handle);
 // routes user agendamento ---------------------------------------------------------------------
