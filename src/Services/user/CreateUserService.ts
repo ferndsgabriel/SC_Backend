@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-import { SendAlertsAdm } from "../../utils/SendAlertsAdm";
+import { SendEmail } from "../../utils/SendEmail";
 import { hash } from "bcryptjs";
 import { FormatPhone } from "../../utils/FormatPhone";
 import { Capitalize } from "../../utils/Capitalize";
@@ -109,17 +109,17 @@ class CreateUserService {
       },
     });
 
-      const amdPhone = await prismaClient.adm.findMany({
+      const admEmail = await prismaClient.adm.findMany({
         select:{
-            phone_number:true
+            email:true
         }
     });
     
 
     const message = 'SalãoCondo: um novo usuário se-cadastrou.';
-    for (var x = 0; x < amdPhone.length; x++) {
-        const phoneNumber = amdPhone[x].phone_number; 
-        SendAlertsAdm(phoneNumber, message);
+    for (var x = 0; x < admEmail.length; x++) {
+        const getEmail = admEmail[x].email; 
+        SendEmail(getEmail, message);
     }  
     return user;
   }

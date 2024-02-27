@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-import { SendAlertsAdm } from "../../utils/SendAlertsAdm";
+import { SendEmail } from "../../utils/SendEmail";
 
 interface agendamentoRequest{
     user_id: string,
@@ -143,9 +143,9 @@ class CreateReservationUserServices{
                 finish:true
             }
         })
-        const amdPhone = await prismaClient.adm.findMany({
+        const admEmail = await prismaClient.adm.findMany({
             select:{
-                phone_number:true
+                email:true
             }
         });
         
@@ -177,9 +177,9 @@ class CreateReservationUserServices{
         SalãoCondo</p>
     `;
     
-        for (var x = 0; x < amdPhone.length; x++) {
-            const phoneNumber = amdPhone[x].phone_number; 
-            SendAlertsAdm(phoneNumber, message);
+        for (var x = 0; x < admEmail.length; x++) {
+            const getEmail = admEmail[x].email; 
+            SendEmail(getEmail, message);
         }  
 
         return (createReservation);

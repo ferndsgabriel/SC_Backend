@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-import { SendAlertsUser } from "../../utils/SendAlertsUser";
+import { SendEmail } from "../../utils/SendEmail";
 
 interface ContaRequest{
   id: string;
@@ -72,8 +72,8 @@ class ActiveUsersAdmServices{
     
     }
     
-    const number = users.phone_number    
-    SendAlertsUser(number, mensagem);
+  
+    SendEmail(users.email, mensagem);
 
     const deleteuser = await prismaClient.user.deleteMany({
       where:{

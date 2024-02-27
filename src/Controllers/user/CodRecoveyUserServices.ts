@@ -3,9 +3,9 @@ import { CodRecoveyUserServices } from "../../Services/user/CodRecoveyUserServic
 class CodRecoveyUserController{
 
     async handle(req:Request, res:Response){
-        const {phone_number} = req.body
+        const {email} = req.body
         const recoveryPassUserServices = new CodRecoveyUserServices();
-        const recoveryPass = await recoveryPassUserServices.execute({phone_number});
+        const recoveryPass = await recoveryPassUserServices.execute({email});
 
         return res.json(recoveryPass);
     }

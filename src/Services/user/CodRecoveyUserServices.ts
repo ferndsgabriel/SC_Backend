@@ -1,14 +1,14 @@
 import prismaClient from "../../prisma";
-import { SendAlertsUser } from "../../utils/SendAlertsUser";
-import { FormatPhone } from "../../utils/FormatPhone";
+import { SendEmail } from "../../utils/SendEmail";
+import { FormatEmail } from "../../utils/FormatEmail";
 import { hash } from "bcryptjs";
 
 interface userRecovery{
-  phone_number:string
+  email:string
 }
 class CodRecoveyUserServices {
   
-  async execute({phone_number}:userRecovery) {
+  async execute({email}:userRecovery) {
     
     function getRandomCode() {
       const codigo = Math.floor(Math.random() * 900000) + 100000;
@@ -17,13 +17,13 @@ class CodRecoveyUserServices {
 
     const randomCode = getRandomCode();
 
-    if (!phone_number){
-      throw new Error('Telefone não inserido.');
+    if (!email){
+      throw new Error('E-mail não inserido.');
   }
 
     const user = await prismaClient.user.findFirst({
       where:{
-        phone_number:FormatPhone(phone_number)
+        email:FormatEmail(email)
       },select:{
         id:true,
         countCod:true,
@@ -34,7 +34,7 @@ class CodRecoveyUserServices {
     });
 
     if (!user){
-      throw new Error('Usuário não encontrado para este número.');
+      throw new Error('Usuário não encontrado para este e-mail.');
     }
 
     const data = new Date();
@@ -86,7 +86,7 @@ class CodRecoveyUserServices {
   `;
   
 
-    SendAlertsUser(phone_number, mensagem);
+    SendEmail(email, mensagem);
 
     return ({ok:true})
   }

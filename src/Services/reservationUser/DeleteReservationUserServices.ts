@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-import { SendAlertsUser } from "../../utils/SendAlertsUser";
+import { SendEmail } from "../../utils/SendEmail";
 
 interface ReservationProps{
     reservation_id: string,
@@ -95,7 +95,7 @@ class DeleteReservationUserServices {
       SalãoCondo</p>
   `;
   
-      SendAlertsUser(user.phone_number, mensagem);
+      SendEmail(user.email, mensagem);
     }
 
     const thereAwaitList = await prismaClient.waitingList.findMany({
@@ -113,7 +113,7 @@ class DeleteReservationUserServices {
       select: {
         user: {
           select: {
-            phone_number: true,
+            email:true
           },
         },
       },
@@ -135,7 +135,7 @@ class DeleteReservationUserServices {
             <p>Atenciosamente,<br>
             SalãoCondo</p>
         `;
-        SendAlertsUser(thereAwaitList[x].user.phone_number, awaitListMensagem);
+        SendEmail(thereAwaitList[x].user.email, awaitListMensagem);
       }
     }
 

@@ -3,9 +3,9 @@ import { CodRecoveyAdmServices } from "../../Services/adm/CodRecoveyAdmServices"
 
 class CodRecoveyAdmController{
     async handle(req:Request, res:Response){
-        const {phone_number} = req.body
+        const {email} = req.body
         const recoveryPassAdmServices = new CodRecoveyAdmServices();
-        const recoveryPass = await recoveryPassAdmServices.execute({phone_number});
+        const recoveryPass = await recoveryPassAdmServices.execute({email});
         return res.json(recoveryPass);
     }
 }

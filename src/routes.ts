@@ -21,7 +21,6 @@ import { CreateaptAdmController } from "./Controllers/adm/CreateaptAdmController
 import { DeleteAccountController } from "./Controllers/adm/DeleteAccountController";
 import { CodRecoveyAdmController } from "./Controllers/adm/CodRecoveyAdmController";
 import { RecoveryPassAdmController } from "./Controllers/adm/RecoveryPassAdmController";
-import { RecoveryEmailAdmController } from "./Controllers/adm/RecoveryEmailAdmController";
 import { ChangeAptControler } from "./Controllers/adm/ChangeAptControler";
 import { EditAptsAdmController } from "./Controllers/adm/EditAptsAdmController";
 import { CreateTowerAdmController } from "./Controllers/adm/CreateTowerAdmController";
@@ -41,7 +40,6 @@ import { DeletePhotoUserController } from "./Controllers/user/DeletePhotoUserCon
 import { DeleteAccountUserController } from "./Controllers/user/DeleteAccountUserController";
 import {CodRecoveyUserController } from "./Controllers/user/CodRecoveyUserServices";
 import { RecoveryPassUserController } from "./Controllers/user/RecoveryPassUserController";
-import { RecoveryEmailController } from "./Controllers/user/RecoveryEmailController";
 // user import agendamento ---------------------------------------------------------------
 import { CreateReservationUserController } from "./Controllers/reservationUser/CreateReservationUserController";
 import { DateUnavailableController } from "./Controllers/reservationUser/DateUnavailableController";
@@ -68,7 +66,6 @@ router.post ("/adm", new CreateAdmController().handle);
 router.post ("/adm/session", new AuthAdmController().handle);
 router.post ("/adm/cod", new CodRecoveyAdmController().handle);
 router.put("/adm/recovery", new RecoveryPassAdmController().handle);
-router.post("/adm/recoveryemail", new RecoveryEmailAdmController().handle);
 router.get("/adm/me", AdmMiddlewares, new DetailsAdmController().handle );
 router.put('/adm/pass', AdmMiddlewares, new ChangePassAdmControlller().handle);
 router.get("/adm/users",AdmMiddlewares, new NewUsersAdmController().handle );
@@ -92,7 +89,6 @@ router.post ("/user", new CreateUserController().handle);
 router.post ("/session", new AuthUserController().handle);
 router.post("/cod", new CodRecoveyUserController().handle);
 router.put("/recovery", new RecoveryPassUserController().handle);
-router.post("/recoveryemail", new RecoveryEmailController().handle);
 router.get("/me", UserMiddlewares, new DetailUserController().handle );
 router.put("/password", UserMiddlewares, new ChangePassUserController().handle);
 router.put("/photo", UserMiddlewares, Multer.single('image'), uploadMiddlewareInstance, new PhotoUserController().handle);

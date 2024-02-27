@@ -1,5 +1,5 @@
 import prismaClient from "../../prisma";
-import { SendAlertsUser } from "../../utils/SendAlertsUser";
+import { SendEmail } from "../../utils/SendEmail";
 
 interface AgendamentoRequest{
     reservation_id:string;
@@ -72,14 +72,14 @@ class SetNewReservationServices{
             where:{
                 apartment_id:idReservation.apartment.id
             },select:{
-                phone_number:true,
+                email:true,
             }
         });
 
         const lenghtUsers = usersInApartment.length;
 
         for (var x = 0; x < lenghtUsers; x++){
-            SendAlertsUser(usersInApartment[x].phone_number, message);
+            SendEmail(usersInApartment[x].email, message);
         }
         
         const deleteAllFalse = await prismaClient.reservation.deleteMany({
