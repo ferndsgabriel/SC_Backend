@@ -34,8 +34,8 @@ class ExcelAdmServices {
             worksheet.eachRow(async (row, rowNumber) => {
                 if (rowNumber === 1) return; // Ignorar cabeçalho
 
-                const cpf = row.getCell(columnMap['CPF']).text;
-                const status = row.getCell(columnMap['Status']).text;
+                const cpf = row.getCell(columnMap['cpf']).text.toLowerCase();
+                const status = row.getCell(columnMap['status']).text.toLowerCase();
 
                 const user = await prismaClient.user.findUnique({
                     where: {
