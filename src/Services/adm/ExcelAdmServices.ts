@@ -34,8 +34,8 @@ class ExcelAdmServices {
             worksheet.eachRow(async (row, rowNumber) => {
                 if (rowNumber === 1) return; // Ignorar cabeçalho
 
-                const cpf = row.getCell(columnMap['cpf']).text;
-                const status = row.getCell(columnMap['status']).text;
+                const cpf = row.getCell(columnMap['CPF']).text;
+                const status = row.getCell(columnMap['Status']).text;
 
                 const user = await prismaClient.user.findUnique({
                     where: {
@@ -51,7 +51,7 @@ class ExcelAdmServices {
                     });
 
                     if (apartment) {
-                        const paymentValue = status.toLowerCase() === 'pago' ? true : false;
+                        const paymentValue = status.toLowerCase() === 'Adimplente' ? true : false;
                         await prismaClient.apartment.update({
                             where: {
                                 id: apartment.id
