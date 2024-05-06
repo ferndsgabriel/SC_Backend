@@ -4,9 +4,9 @@ import { Request, Response } from "express";
 
 class RecoveryPassAdmController{
     async handle(req:Request, res:Response){
-        const {cod, pass, phone_number} = req.body;
+        const {cod, pass, email} = req.body;
         const recoveryPassAdmServices = new RecoveryPassAdmServices();
-        const recoveryPass = await recoveryPassAdmServices.execute({cod, pass, phone_number
+        const recoveryPass = await recoveryPassAdmServices.execute({cod, pass, email
         })
 
         return res.json(recoveryPass);
