@@ -1,23 +1,23 @@
 import { hash, compare } from "bcryptjs";
 import prismaClient from "../../prisma";
-import { FormatPhone } from "../../utils/FormatPhone";
+import { FormatEmail } from "../../utils/FormatEmail";
 
 interface recoveryProps {
   pass: string;
   cod: string;
-  phone_number: string;
+  email: string;
 }
 
 class RecoveryPassAdmServices {
-  async execute({ pass, cod, phone_number }: recoveryProps) {
+  async execute({ pass, cod, email }: recoveryProps) {
 
-    if (!cod  || !pass  || !phone_number ) {
+    if (!cod  || !pass  || !email ) {
       throw new Error('Dados incompletos: Envie todos os campos obrigatórios.');
     }
 
     const adm = await prismaClient.adm.findFirst({
       where: {
-        phone_number: FormatPhone(phone_number),
+        email: FormatEmail(email),
       },
       select:{
         codDate:true,
@@ -44,12 +44,12 @@ class RecoveryPassAdmServices {
     }
     
     const moreTeenMinutes = new Date();
-    moreTeenMinutes.setMinutes(moreTeenMinutes.getMinutes() + 10);
+    moreTeenMinutes.setMinutes(moreTeenMinutes.getMinutes() + 25);
 
     if (adm.codDate <= moreTeenMinutes) {
       const updateRecovery = await prismaClient.adm.update({
           where:{
-              phone_number:FormatPhone(phone_number)
+              email:FormatEmail(email)
           },data:{
             codRecovery:null
           }
