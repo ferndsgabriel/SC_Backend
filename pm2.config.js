@@ -2,14 +2,14 @@ module.exports = {
   apps: [
     {
       name: 'My Application',
-      script: './src/server.ts',
-      interpreter: 'ts-node', 
-      env_qa: {
-        PORT: 3333,
-        NODE_ENV: 'production',
+      script: 'src/server.ts',
+      interpreter: 'ts-node',
+      interpreter_args: '-r tsconfig-paths/register',
+      watch: true,
+      env: {
+        NODE_ENV: 'development',
       },
       env_production: {
-        PORT: 3333,
         NODE_ENV: 'production',
       },
     },
