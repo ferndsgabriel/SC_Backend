@@ -36,7 +36,7 @@ class AuthAdmServices{
                 email: adm.email, 
                 nome: adm.name   
             }, 
-            process.env.AJWT_SECRET,          
+            process.env.AJWT_SECRET!,          
             {
                 subject:adm.id, 
                 expiresIn:"30d" 
