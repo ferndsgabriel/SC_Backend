@@ -14,6 +14,7 @@ app.use(router);
 
 app.get('/', async (req: Request, res: Response) => {
   try {
+    console.log('on')
     return res.send({ok:true});
   } catch (error) {
     return res.status(500).send('Erro ao conectar no servidor.');
