@@ -14,20 +14,9 @@ app.use(router);
 
 app.get('/', async (req: Request, res: Response) => {
   try {
-    const response = await axios.get('https://ipinfo.io/json');
-    const location = response.data;
-
-    const responseText = `
-      Localização aproximada do servidor:
-      Cidade: ${location.city}
-      Estado: ${location.region}
-      País: ${location.country}
-    `;
-
-    return res.send(responseText);
+    return res.send({ok:true});
   } catch (error) {
-    console.error('Erro ao obter localização:', error);
-    return res.status(500).send('Erro ao obter localização do servidor.');
+    return res.status(500).send('Erro ao conectar no servidor.');
   }
 });
 
