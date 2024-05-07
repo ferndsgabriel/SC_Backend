@@ -50,7 +50,8 @@ class CreateAdmServices{
         throw new Error('Telefone já vinculado a outra conta.');
     }
     
-    const compareSenhaADM = await compare(cod, process.env.ADM_PASS); // criptografia de senha
+    const compareSenhaADM = await compare(cod, process.env.ADM_PASS!);
+
     
     if(!compareSenhaADM){
         throw new Error('Código de administrador incorreto.');
