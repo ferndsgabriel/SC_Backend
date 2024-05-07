@@ -1,13 +1,15 @@
 import ExcelJS from 'exceljs';
 import prismaClient from '../../prisma';
+import { Buffer } from 'buffer';
+
 
 class ExcelAdmServices {
-    async execute({ excelBuffer }) {
+    async execute({ excelBuffer }: { excelBuffer: Buffer }) { 
         if (!excelBuffer || !Buffer.isBuffer(excelBuffer)) {
             throw new Error('Envie um buffer contendo o arquivo Excel.');
         }
 
-        function cpfMask(cpf) {
+        function cpfMask(cpf:string) {
             const noSpace = cpf.trim();
             if (noSpace.length === 11) {
                 const one = noSpace.substring(0, 3);
@@ -26,10 +28,11 @@ class ExcelAdmServices {
             await workbook.xlsx.load(excelBuffer);
             const worksheet = workbook.getWorksheet(1);
 
-            const columnMap = {};
+            const columnMap: { [key: string]: number } = {};
             worksheet.getRow(1).eachCell((cell, colNumber) => {
                 columnMap[cell.text.toLowerCase()] = colNumber;
             });
+            
 
             worksheet.eachRow(async (row, rowNumber) => {
                 if (rowNumber === 1) return; // Ignorar cabeçalho

@@ -123,6 +123,9 @@ class CreateReservationUserServices{
             throw new Error ("Você já soliciitou uma reserva pra esse dia");
         }
 
+        if (start >= finish){
+            throw new Error ('O horário de início da reserva não pode ser posterior ou igual ao término.')
+        }
 
         const createReservation = await prismaClient.reservation.create({
             data:{

@@ -38,13 +38,14 @@ class CodRecoveyUserServices {
     }
 
     const data = new Date();
+    
     const onDayMore1 = user.codDate;
     onDayMore1.setDate(onDayMore1.getDate() + 1);
 
     if (user.countCod >= 5 && onDayMore1 > data ){
       throw new Error('Você ultrapassou o limite diário de códigos de recuperação: 5. Aguarde 24 horas.');
     }
-
+    
     const codHash = await hash (randomCode, 8);
 
     if (onDayMore1 < data){
@@ -87,8 +88,7 @@ class CodRecoveyUserServices {
   
 
     SendEmail(email, mensagem);
-
-    return ({ok:true})
+    return ({ok:true});
   }
 }
 export { CodRecoveyUserServices};
