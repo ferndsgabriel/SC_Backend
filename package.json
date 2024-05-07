@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev src/server.ts -H 192.168.15.63 -p 3333",
+    "dev": "nodemon src/server.ts",
     "build": "tsc && prisma generate",
     "postinstall": "prisma generate"
   },
