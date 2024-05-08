@@ -43,27 +43,24 @@ class RecoveryPassAdmServices {
         throw new Error('Você já alterou sua senha nos últimos 30 dias.');
     }
     
-    const moreTeenMinutes = new Date();
-    moreTeenMinutes.setMinutes(moreTeenMinutes.getMinutes() + 25);
+    const tenMinutesPassed = adm.codDate;
+    tenMinutesPassed.setMinutes(tenMinutesPassed.getMinutes() + 10);
 
-    if (adm.codDate <= moreTeenMinutes) {
-      const updateRecovery = await prismaClient.adm.update({
-          where:{
-              email:FormatEmail(email)
-          },data:{
-            codRecovery:null
-          }
-        })
+    if (onDay >= tenMinutesPassed) {
         throw new Error("Código expirado!");
     }
 
     const hashPass = await hash (pass, 8);
 
+    const dateChangePass = new Date();
+    dateChangePass.setDate(dateChangePass.getDate()+30);
+
     const updatePass = await prismaClient.adm.update({
       where:{
         id:adm.id
       },data:{
-        pass:hashPass
+        pass:hashPass,
+        dateChangePass:dateChangePass
       }
     })
 
@@ -72,7 +69,6 @@ class RecoveryPassAdmServices {
           adm_id:adm.id
       }
   });
-
 
     return ({
       ok:true

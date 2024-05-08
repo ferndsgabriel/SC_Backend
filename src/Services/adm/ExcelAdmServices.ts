@@ -54,7 +54,7 @@ class ExcelAdmServices {
                     });
 
                     if (apartment) {
-                        const paymentValue = status.toLowerCase() === 'adimplente' ? true : false;
+                        const paymentValue = status.toLowerCase() === 'pago' ? true : false;
                         await prismaClient.apartment.update({
                             where: {
                                 id: apartment.id

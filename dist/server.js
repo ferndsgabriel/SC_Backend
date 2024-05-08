@@ -15,15 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 require("express-async-errors");
 const cors_1 = __importDefault(require("cors"));
+const axios_1 = __importDefault(require("axios")); // Importe o axios
 const routes_1 = require("./routes");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use(routes_1.router);
+let location = '';
+// Função para obter a localização
+function getLocation() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield axios_1.default.get('https://ipinfo.io/json');
+            const data = response.data;
+            const pais = data.country;
+            location = pais;
+        }
+        catch (error) {
+            location = "Não foi possível obter a localização do servidor";
+        }
+    });
+}
+// Rota principal
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('on');
-        return res.send({ ok: true });
+        yield getLocation();
+        const data = new Date();
+        const dataFormatada = data.toISOString();
+        return res.send({
+            Data: dataFormatada,
+            Servidor: location
+        });
     }
     catch (error) {
         return res.status(500).send('Erro ao conectar no servidor.');

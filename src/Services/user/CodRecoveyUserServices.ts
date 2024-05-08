@@ -38,7 +38,7 @@ class CodRecoveyUserServices {
     }
 
     const data = new Date();
-    
+
     const onDayMore1 = user.codDate;
     onDayMore1.setDate(onDayMore1.getDate() + 1);
 
@@ -88,7 +88,7 @@ class CodRecoveyUserServices {
   
 
     SendEmail(email, mensagem);
-    return ({ok:true});
+    return ({ok:true, data:data});
   }
 }
 export { CodRecoveyUserServices};

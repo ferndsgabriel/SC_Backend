@@ -87,7 +87,7 @@ class CodRecoveyUserServices {
     Equipe de Suporte do SalãoCondo
   `;
             (0, SendEmail_1.SendEmail)(email, mensagem);
-            return ({ ok: true });
+            return ({ ok: true, data: data });
         });
     }
 }

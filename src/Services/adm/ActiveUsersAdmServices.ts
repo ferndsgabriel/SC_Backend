@@ -9,7 +9,7 @@ interface ContaRequest{
 class ActiveUsersAdmServices{
   async execute({id, accountStatus}:ContaRequest){
     
-    if (!id || !accountStatus){
+    if (!id || accountStatus === null){
       throw new Error('Envie todos os dados!');
     }
     

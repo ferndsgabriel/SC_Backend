@@ -61,7 +61,7 @@ class ExcelAdmServices {
                             }
                         });
                         if (apartment) {
-                            const paymentValue = status.toLowerCase() === 'adimplente' ? true : false;
+                            const paymentValue = status.toLowerCase() === 'pago' ? true : false;
                             yield prisma_1.default.apartment.update({
                                 where: {
                                     id: apartment.id

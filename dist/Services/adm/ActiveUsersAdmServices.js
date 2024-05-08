@@ -18,7 +18,7 @@ const SendEmail_1 = require("../../utils/SendEmail");
 class ActiveUsersAdmServices {
     execute({ id, accountStatus }) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!id || !accountStatus) {
+            if (!id || accountStatus === null) {
                 throw new Error('Envie todos os dados!');
             }
             const userActive = yield prisma_1.default.user.findFirst({
