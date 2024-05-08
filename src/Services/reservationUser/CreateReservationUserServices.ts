@@ -162,11 +162,19 @@ class CreateReservationUserServices{
         }
 
         function formatHours(number:number){
-            const string = number.toString();
-            const hours = string.substring(0,2);
-            const minutes = string.substring(2,4);
+            const numberInString = number.toString();
+            if (numberInString.length === 4){
+                const string = number.toString();
+                const hours = string.substring(0,2);
+                const minutes = string.substring(2,4);
+                return `${hours}:${minutes}`;
+            }else{
+                const string = number.toString();
+                const hours = string.substring(0,1);
+                const minutes = string.substring(1,3);
+                return `${hours}:${minutes}`;
+            }
 
-            return `${hours}:${minutes}`;
         }
         
         const message = `
