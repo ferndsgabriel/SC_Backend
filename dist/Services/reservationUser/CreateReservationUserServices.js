@@ -141,10 +141,19 @@ class CreateReservationUserServices {
                 return `${day}/${month}/${year}`;
             }
             function formatHours(number) {
-                const string = number.toString();
-                const hours = string.substring(0, 2);
-                const minutes = string.substring(2, 4);
-                return `${hours}:${minutes}`;
+                const numberInString = number.toString();
+                if (numberInString.length === 4) {
+                    const string = number.toString();
+                    const hours = string.substring(0, 2);
+                    const minutes = string.substring(2, 4);
+                    return `${hours}:${minutes}`;
+                }
+                else {
+                    const string = number.toString();
+                    const hours = string.substring(0, 1);
+                    const minutes = string.substring(1, 3);
+                    return `${hours}:${minutes}`;
+                }
             }
             const message = `
         <p>Olá, administrador do SalãoCondo,</p>
