@@ -85,7 +85,7 @@ class DeleteReservationUserServices {
       const mensagem = `
       <p>Prezado Morador, ${createTaxed.name}</p>
   
-      <p>Sua reserva cancelada foi sujeita a uma taxa de R$ 80,00.</p>
+      <p>Sua reserva cancelada foi sujeita a uma taxa de R$ 100,00.</p>
   
       <p>Por favor, esteja ciente das políticas de cancelamento antes de fazer futuras reservas para evitar taxas adicionais.</p>
   
