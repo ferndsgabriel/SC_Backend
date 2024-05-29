@@ -50,29 +50,33 @@ class ActiveUsersAdmServices {
             let mensagem = '';
             if (users.accountStatus === false) {
                 mensagem = `
-      Olá,<br>${users.name} ${users.lastname}<br>
-    
-      Lamentamos informar que, neste momento, não podemos validar sua conta no SalãoCondo.<br>
-      Pedimos desculpas pela inconveniência e agradecemos pela sua compreensão.<br><br>
-    
-      Se tiver alguma dúvida ou precisar de assistência, entre em contato com nossa equipe de suporte.<br><br>
-    
-      Atenciosamente,<br>
-      Equipe de Suporte do SalãoCondo
-    `;
+      <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+          <p>Olá ${users.name} ${users.lastname},</p>
+          
+          <p>Lamentamos informar que, neste momento, não podemos validar sua conta no SalãoCondo. 😔</p>
+          <p>Pedimos desculpas pela inconveniência e agradecemos pela sua compreensão. 🙏</p><br>
+          
+          <p>Se tiver alguma dúvida ou precisar de assistência, entre em contato com nossa equipe de suporte. 📞</p><br>
+          
+          <p>Atenciosamente,<br>
+          Equipe de Suporte do SalãoCondo 🌟</p>
+      </div>
+  `;
             }
             else if (users.accountStatus === true) {
                 mensagem = `
-      Olá,<br>${users.name} ${users.lastname}<br>
-    
-      Parabéns! É com grande satisfação que informamos que sua conta no SalãoCondo foi aprovada com sucesso.<br>
-      Agora você pode fazer login e começar a desfrutar de todos os recursos e benefícios disponíveis em nossa plataforma.<br><br>
-    
-      Seja bem-vindo(a) e aproveite ao máximo a sua experiência!<br><br>
-    
-      Atenciosamente,<br>
-      Equipe do SalãoCondo
-    `;
+      <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+          <p>Olá ${users.name} ${users.lastname},</p><br>
+          
+          <p>🎉 Parabéns! É com grande satisfação que informamos que sua conta no SalãoCondo foi aprovada com sucesso.</p>
+          <p>Agora você pode fazer login e começar a desfrutar de todos os recursos e benefícios disponíveis em nossa plataforma.</p><br>
+          
+          <p>Seja bem-vindo(a) e aproveite ao máximo a sua experiência! 🌟</p><br>
+          
+          <p>Atenciosamente,<br>
+          Equipe do SalãoCondo</p>
+      </div>
+  `;
             }
             (0, SendEmail_1.SendEmail)(users.email, mensagem);
             const deleteuser = yield prisma_1.default.user.deleteMany({

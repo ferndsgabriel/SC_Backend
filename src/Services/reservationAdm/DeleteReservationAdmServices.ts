@@ -1,5 +1,6 @@
 import prismaClient from "../../prisma";
 import { SendEmail } from "../../utils/SendEmail";
+import { FormatEmail } from "../../utils/FormatEmail";
 
 interface reservationProps{
     reservation_id:string
@@ -18,6 +19,7 @@ class DeleteReservationAdmServices{
                 apartment_id:true,
                 date:true,
                 phone_number:true,
+                email:true,
                 apartment:{
                     select:{
                         tower_id:true
@@ -53,34 +55,40 @@ class DeleteReservationAdmServices{
         if (thereAwaitList.length > 0 ){
             for (var x=0; x < thereAwaitList.length; x++){
                 const awaitListMensagem = `
-                    <p>Prezado Morador,</p>
-        
-                    <p>A reserva que você estava aguardando na lista de espera foi cancelada.</p>
-        
-                    <p>Essa vaga agora está disponível para agendamento. Não perca a oportunidade de reservá-la!</p>
-        
-                    <p>Visite nosso sistema de reservas para garantir a data desejada.</p>
-        
-                    <p>Se precisar de assistência ou tiver alguma dúvida, entre em contato conosco.</p>
-        
-                    <p>Atenciosamente,<br>
-                    SalãoCondo</p>
+                    <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+                        <p>Prezado Morador,</p><br>
+
+                        <p>ℹ️ A reserva que você estava aguardando na lista de espera foi cancelada.</p><br>
+
+                        <p>📅 Essa vaga agora está disponível para agendamento. Não perca a oportunidade de reservá-la!</p><br>
+
+                        <p>🔗 Visite nosso sistema de reservas para garantir a data desejada.</p><br>
+
+                        <p>ℹ️ Se precisar de assistência ou tiver alguma dúvida, entre em contato conosco.</p><br>
+
+                        <p>Atenciosamente,<br>
+                        Equipe SalãoCondo 🌟</p>
+                    </div>
                 `;
                 SendEmail(thereAwaitList[x].user.email, awaitListMensagem);
             }
         }
 
         const message = `
-            <p>Prezado Morador, <p>          
-
-            <p>Informamos que a sua reserva foi cancelada devido ao não pagamento das taxas condominiais. Essa medida foi tomada em conformidade com as políticas do condomínio.</p>
-
-            <p>Se precisar de assistência ou tiver alguma dúvida, entre em contato conosco.</p>
-
+        <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+            <p>Prezado Morador,</p><br>
+    
+            <p>ℹ️ Informamos que a sua reserva foi cancelada devido ao não pagamento das taxas condominiais. Essa medida foi tomada em conformidade com as políticas do condomínio.</p><br>
+    
+            <p>📞 Se precisar de assistência ou tiver alguma dúvida, entre em contato conosco.</p><br>
+    
             <p>Atenciosamente,<br>
-            SalãoCondo</p>
-        `;  
-        SendEmail(reservationExist.phone_number, message);
+            Equipe SalãoCondo 🌟</p>
+        </div>
+    `;
+    
+    
+        SendEmail(FormatEmail(reservationExist.email), message);
 
         const deleteReservation = await prismaClient.reservation.delete({
             where:{

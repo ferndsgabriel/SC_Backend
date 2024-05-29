@@ -72,20 +72,22 @@ class CodRecoveyUserServices {
                 });
             }
             const mensagem = `
-    Olá, ${user.name} ${user.lastname}<br><br>
-  
-    Recebemos uma solicitação de recuperação de conta para o SalãoCondo.<br>
-    Utilize o seguinte código para concluir o processo de recuperação:<br><br>
-  
-    <strong>${randomCode}</strong><br><br>
-  
-    Este código é válido por um curto período de tempo. Não compartilhe com ninguém.<br><br>
-  
-    Se você não solicitou essa recuperação ou tiver qualquer dúvida, entre em contato conosco.<br><br>
-  
-    Atenciosamente,<br>
-    Equipe de Suporte do SalãoCondo
-  `;
+    <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <p>Olá, ${user.name} ${user.lastname}</p><br>
+      
+        <p>🔐 Recebemos uma solicitação de recuperação de conta para o SalãoCondo.</p>
+        <p>Utilize o seguinte código para concluir o processo de recuperação:</p><br>
+      
+        <p><strong>${randomCode}</strong></p><br>
+      
+        <p>Este código é válido por um curto período de tempo. Não compartilhe com ninguém.</p><br>
+      
+        <p>Se você não solicitou essa recuperação ou tiver qualquer dúvida, entre em contato conosco.</p><br>
+      
+        <p>Atenciosamente,<br>
+        Equipe de Suporte do SalãoCondo 🌟</p>
+    </div>
+`;
             (0, SendEmail_1.SendEmail)(email, mensagem);
             return ({ ok: true, data: data });
         });

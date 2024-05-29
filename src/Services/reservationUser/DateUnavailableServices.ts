@@ -1,6 +1,5 @@
 import prismaClient from "../../prisma";
 
-
 interface userProps {
   user_id:string
 }

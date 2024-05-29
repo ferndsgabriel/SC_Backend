@@ -40,6 +40,7 @@ import { DeletePhotoUserController } from "./Controllers/user/DeletePhotoUserCon
 import { DeleteAccountUserController } from "./Controllers/user/DeleteAccountUserController";
 import {CodRecoveyUserController } from "./Controllers/user/CodRecoveyUserServices";
 import { RecoveryPassUserController } from "./Controllers/user/RecoveryPassUserController";
+import { ReportUserController } from "./Controllers/user/ReportUserController";
 // user import agendamento ---------------------------------------------------------------
 import { CreateReservationUserController } from "./Controllers/reservationUser/CreateReservationUserController";
 import { DateUnavailableController } from "./Controllers/reservationUser/DateUnavailableController";
@@ -94,6 +95,7 @@ router.put("/password", UserMiddlewares, new ChangePassUserController().handle);
 router.put("/photo", UserMiddlewares, Multer.single('image'), uploadMiddlewareInstance, new PhotoUserController().handle);
 router.put('/photodelete', UserMiddlewares, new DeletePhotoUserController().handle);
 router.delete('/account', UserMiddlewares, new DeleteAccountUserController().handle);
+router.post('/report', UserMiddlewares, new ReportUserController().handle);
 // routes user agendamento ---------------------------------------------------------------------
 router.post("/reservations", UserMiddlewares, new CreateReservationUserController().handle);
 router.get("/allreservations", UserMiddlewares, new DateUnavailableController().handle);

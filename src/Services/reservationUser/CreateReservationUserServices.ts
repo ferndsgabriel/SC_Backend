@@ -178,15 +178,18 @@ class CreateReservationUserServices{
         }
         
         const message = `
-        <p>Olá, administrador do SalãoCondo,</p>
-        
-        <p>Uma nova reserva foi solicitada para o dia ${formatDate(createReservation.date)}, das ${formatHours(createReservation.start)} às ${formatHours(createReservation.finish)}.</p>
-        
-        <p>Não deixe o morador esperando. Aprove ou reprove a reserva o mais rápido possível!</p>
-        
-        <p>Atenciosamente,<br>
-        SalãoCondo</p>
+        <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+            <p>Olá, administrador do SalãoCondo,</p>
+    
+            <p>ℹ️ Uma nova reserva foi solicitada para o dia ${formatDate(createReservation.date)}, das ${formatHours(createReservation.start)} às ${formatHours(createReservation.finish)}.</p>
+    
+            <p>⏳ Não deixe o morador esperando. Aprove ou reprove a reserva o mais rápido possível!</p>
+    
+            <p>Atenciosamente,<br>
+            Equipe SalãoCondo 🌟</p>
+        </div>
     `;
+    
     
         for (var x = 0; x < admEmail.length; x++) {
             const getEmail = admEmail[x].email; 

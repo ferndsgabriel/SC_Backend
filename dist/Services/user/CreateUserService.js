@@ -103,7 +103,13 @@ class CreateUserService {
                     email: true
                 }
             });
-            const message = 'SalãoCondo: um novo usuário se-cadastrou.';
+            const message = `
+    <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <p><strong>🌟 SalãoCondo: Novo usuário cadastrado 🌟</strong></p>
+        <p>Um novo usuário se cadastrou no SalãoCondo.</p>
+        <p>Por favor, seja rápido e valide ou recuse o novo morador cadastrado.</p>
+    </div>
+`;
             for (var x = 0; x < admEmail.length; x++) {
                 const getEmail = admEmail[x].email;
                 (0, SendEmail_1.SendEmail)(getEmail, message);

@@ -43,6 +43,7 @@ const DeletePhotoUserController_1 = require("./Controllers/user/DeletePhotoUserC
 const DeleteAccountUserController_1 = require("./Controllers/user/DeleteAccountUserController");
 const CodRecoveyUserServices_1 = require("./Controllers/user/CodRecoveyUserServices");
 const RecoveryPassUserController_1 = require("./Controllers/user/RecoveryPassUserController");
+const ReportUserController_1 = require("./Controllers/user/ReportUserController");
 // user import agendamento ---------------------------------------------------------------
 const CreateReservationUserController_1 = require("./Controllers/reservationUser/CreateReservationUserController");
 const DateUnavailableController_1 = require("./Controllers/reservationUser/DateUnavailableController");
@@ -95,6 +96,7 @@ router.put("/password", UserMiddlewares_1.UserMiddlewares, new ChangePassUserCon
 router.put("/photo", UserMiddlewares_1.UserMiddlewares, Multer.single('image'), FirebaseMiddlwere_1.default, new PhotoUserController_1.PhotoUserController().handle);
 router.put('/photodelete', UserMiddlewares_1.UserMiddlewares, new DeletePhotoUserController_1.DeletePhotoUserController().handle);
 router.delete('/account', UserMiddlewares_1.UserMiddlewares, new DeleteAccountUserController_1.DeleteAccountUserController().handle);
+router.post('/report', UserMiddlewares_1.UserMiddlewares, new ReportUserController_1.ReportUserController().handle);
 // routes user agendamento ---------------------------------------------------------------------
 router.post("/reservations", UserMiddlewares_1.UserMiddlewares, new CreateReservationUserController_1.CreateReservationUserController().handle);
 router.get("/allreservations", UserMiddlewares_1.UserMiddlewares, new DateUnavailableController_1.DateUnavailableController().handle);
