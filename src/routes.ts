@@ -29,7 +29,6 @@ import { DeleteTowerAdmController } from "./Controllers/adm/DeleteTowerAdmContro
 import { EditTowerAdmController } from "./Controllers/adm/EditTowerAdmController";
 import { DeleteAptAdmController } from "./Controllers/adm/DeleteAptAdmController";
 import { ExcelAdmController, upload } from "./Controllers/adm/ExcelAdmController";
-import DashboardAdmController from "./Controllers/adm/DashboardAdmController";
 // user import ---------------------------------------------------------------
 import { ListAptUserController } from "./Controllers/user/ListAptUserController";
 import { CreateUserController } from "./Controllers/user/CreateUserController";
@@ -86,7 +85,6 @@ router.post ("/adm/towers", AdmMiddlewares, new  CreateTowerAdmController().hand
 router.delete ("/adm/towers", AdmMiddlewares, new DeleteTowerAdmController().handle);
 router.put ("/adm/towers", AdmMiddlewares, new EditTowerAdmController().handle);
 router.post("/adm/excel",  AdmMiddlewares, upload.single('excel'), new ExcelAdmController().handle);
-router.get("/adm/dashboard",  AdmMiddlewares, new DashboardAdmController().handle);
 // routes user ---------------------------------------------------------------------
 router.get ("/towers", new ListTowersUserController().handle);
 router.get("/apts", new ListAptUserController().handle);
