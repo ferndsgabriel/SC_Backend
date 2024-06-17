@@ -2,7 +2,10 @@ import prismaClient from "../../prisma";
 
 class ListAllTaxedAgendamentoServices{
     async execute(){
-        const allTaxed = await prismaClient.taxed.findMany({
+        const allTaxed = await prismaClient.isCanceled.findMany({
+            where:{
+                isTaxed:true
+            },
             select:{
                 dateGuest:true,
                 dateCancellation:true,

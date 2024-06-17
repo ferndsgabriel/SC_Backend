@@ -32,6 +32,7 @@ const DeleteTowerAdmController_1 = require("./Controllers/adm/DeleteTowerAdmCont
 const EditTowerAdmController_1 = require("./Controllers/adm/EditTowerAdmController");
 const DeleteAptAdmController_1 = require("./Controllers/adm/DeleteAptAdmController");
 const ExcelAdmController_1 = require("./Controllers/adm/ExcelAdmController");
+const DashboardAdmController_1 = __importDefault(require("./Controllers/adm/DashboardAdmController"));
 // user import ---------------------------------------------------------------
 const ListAptUserController_1 = require("./Controllers/user/ListAptUserController");
 const CreateUserController_1 = require("./Controllers/user/CreateUserController");
@@ -51,6 +52,8 @@ const DeleteReservationUserController_1 = require("./Controllers/reservationUser
 const MyAgendamentosUserController_1 = require("./Controllers/reservationUser/MyAgendamentosUserController");
 const GuestAddController_1 = require("./Controllers/reservationUser/GuestAddController");
 const WaitListUserController_1 = require("./Controllers/reservationUser/WaitListUserController");
+const ListWithoutAvaliationUserController_1 = require("./Controllers/reservationUser/ListWithoutAvaliationUserController");
+const AvaliationUserController_1 = require("./Controllers/reservationUser/AvaliationUserController");
 // adm import agendamento ---------------------------------------------------------------
 const NewReservationsAdmController_1 = require("./Controllers/reservationAdm/NewReservationsAdmController");
 const SetNewReservationController_1 = require("./Controllers/reservationAdm/SetNewReservationController");
@@ -84,6 +87,7 @@ router.post("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new CreateTowerAdmCo
 router.delete("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new DeleteTowerAdmController_1.DeleteTowerAdmController().handle);
 router.put("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new EditTowerAdmController_1.EditTowerAdmController().handle);
 router.post("/adm/excel", AdmMiddlewares_1.AdmMiddlewares, ExcelAdmController_1.upload.single('excel'), new ExcelAdmController_1.ExcelAdmController().handle);
+router.get("/adm/dashboard", AdmMiddlewares_1.AdmMiddlewares, new DashboardAdmController_1.default().handle);
 // routes user ---------------------------------------------------------------------
 router.get("/towers", new ListTowersUserController_1.ListTowersUserController().handle);
 router.get("/apts", new ListAptUserController_1.ListAptUserController().handle);
@@ -102,8 +106,10 @@ router.post("/reservations", UserMiddlewares_1.UserMiddlewares, new CreateReserv
 router.get("/allreservations", UserMiddlewares_1.UserMiddlewares, new DateUnavailableController_1.DateUnavailableController().handle);
 router.delete("/reservations", UserMiddlewares_1.UserMiddlewares, new DeleteReservationUserController_1.DeleteReservationUserController().handle);
 router.get("/myreservations", UserMiddlewares_1.UserMiddlewares, new MyAgendamentosUserController_1.MyAgendamentosUserController().handle);
+router.get("/noavaliation", UserMiddlewares_1.UserMiddlewares, new ListWithoutAvaliationUserController_1.ListWithoutAvaliationUserController().handle);
 router.put("/guest", UserMiddlewares_1.UserMiddlewares, new GuestAddController_1.GuestAddController().handle);
 router.post("/list", UserMiddlewares_1.UserMiddlewares, new WaitListUserController_1.WaitListUserController().handle);
+router.put("/avaliation", UserMiddlewares_1.UserMiddlewares, new AvaliationUserController_1.AvaliationUserController().handle);
 // routes adm agendamento ---------------------------------------------------------------------
 router.get("/adm/reservations", AdmMiddlewares_1.AdmMiddlewares, new NewReservationsAdmController_1.NewReservationsAdmController().handle);
 router.put("/adm/setreservations", AdmMiddlewares_1.AdmMiddlewares, new SetNewReservationController_1.SetNewReservationController().handle);

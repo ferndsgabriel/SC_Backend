@@ -50,12 +50,15 @@ class SetNewReservationServices {
             }
         }
 
+        const onDay = new Date();
+
         const updatedReservation = await prismaClient.reservation.update({
             where: {
                 id: reservation_id
             },
             data: {
-                reservationStatus: status
+                reservationStatus: status,
+                approvalDate:onDay
             }
         });
 

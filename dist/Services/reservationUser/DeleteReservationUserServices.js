@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeleteReservationUserServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
 const SendEmail_1 = require("../../utils/SendEmail");
+const DateInInt_1 = __importDefault(require("../../utils/DateInInt"));
 class DeleteReservationUserServices {
     execute({ reservation_id, user_id }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,8 +50,7 @@ class DeleteReservationUserServices {
             }
             const reservationExist = yield prisma_1.default.reservation.findFirst({
                 where: {
-                    id: reservation_id,
-                    apartment_id: user.apartment.id
+                    id: reservation_id
                 }, select: {
                     date: true,
                     reservationStatus: true
@@ -59,25 +59,20 @@ class DeleteReservationUserServices {
             if (!reservationExist) {
                 throw new Error('Essa reserva não existe!');
             }
-            const onDayMoreTwo = new Date();
-            onDayMoreTwo.setDate(onDayMoreTwo.getDate() + 2);
-            const reservationInDate = new Date();
-            const stringDate = reservationExist.date.toString();
-            const yearDate = stringDate.substring(0, 4);
-            const monthDate = stringDate.substring(4, 6);
-            const dayString = stringDate.substring(6, 8);
-            const monthDateInt = parseInt(monthDate);
-            reservationInDate.setFullYear(parseInt(yearDate));
-            reservationInDate.setMonth(monthDateInt - 1);
-            reservationInDate.setDate(parseInt(dayString));
-            if (onDayMoreTwo >= reservationInDate && reservationExist.reservationStatus === true) {
-                const createTaxed = yield prisma_1.default.taxed.create({
+            const getDayNow = new Date();
+            const onDay = new Date();
+            const onDayMoreTwo = (0, DateInInt_1.default)(getDayNow, 2);
+            const onDayCancell = (0, DateInInt_1.default)(onDay, 0);
+            if (onDayMoreTwo >= reservationExist.date && reservationExist.reservationStatus === true) {
+                const createTaxed = yield prisma_1.default.isCanceled.create({
                     data: {
                         apartment_id: user.apartment.id,
-                        dateGuest: reservationInDate,
+                        dateGuest: reservationExist.date,
+                        dateCancellation: onDayCancell,
                         email: user.email,
                         phone_number: user.phone_number,
-                        name: `${user.name} ${user.lastname}`
+                        name: `${user.name} ${user.lastname}`,
+                        isTaxed: true
                     }
                 });
                 const mensagem = `
@@ -95,6 +90,19 @@ class DeleteReservationUserServices {
       </div>
   `;
                 (0, SendEmail_1.SendEmail)(user.email, mensagem);
+            }
+            else {
+                const createFinsih = yield prisma_1.default.isCanceled.create({
+                    data: {
+                        apartment_id: user.apartment.id,
+                        dateGuest: reservationExist.date,
+                        dateCancellation: (0, DateInInt_1.default)(getDayNow, 0),
+                        email: user.email,
+                        phone_number: user.phone_number,
+                        name: `${user.name} ${user.lastname}`,
+                        isTaxed: false
+                    }
+                });
             }
             const thereAwaitList = yield prisma_1.default.waitingList.findMany({
                 where: {

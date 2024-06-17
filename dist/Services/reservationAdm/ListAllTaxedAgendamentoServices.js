@@ -17,7 +17,10 @@ const prisma_1 = __importDefault(require("../../prisma"));
 class ListAllTaxedAgendamentoServices {
     execute() {
         return __awaiter(this, void 0, void 0, function* () {
-            const allTaxed = yield prisma_1.default.taxed.findMany({
+            const allTaxed = yield prisma_1.default.isCanceled.findMany({
+                where: {
+                    isTaxed: true
+                },
                 select: {
                     dateGuest: true,
                     dateCancellation: true,

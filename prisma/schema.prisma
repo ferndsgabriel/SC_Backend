@@ -15,7 +15,6 @@ model Adm {
   name                  String
   lastname              String
   phone_number          String        @unique
-
   codRecovery           String? 
   codDate               DateTime?       @default(now())
   countCod              Int             @default(0)
@@ -41,7 +40,7 @@ model Apartment {
   tower_id              String
   Reservations          Reservation[] 
   user                  User[]
-  taxed                 Taxed[] 
+  isCanceled            IsCanceled[] 
 }
 
 model User {
@@ -57,7 +56,6 @@ model User {
   apartment             Apartment       @relation(fields: [apartment_id], references: [id])
   apartment_id          String
   waitingList           WaitingList[]
-
   codRecovery           String? 
   codDate               DateTime?       @default(now())
   countCod              Int             @default(0)
@@ -74,25 +72,28 @@ model Reservation {
   date                  Int
   start                 Int
   finish                Int
+  iWas                 Boolean?       
   name                  String
   email                 String
   phone_number          String
   apartment             Apartment       @relation(fields: [apartment_id], references: [id])
   apartment_id          String
   createDate            DateTime        @default(now())
+  approvalDate          DateTime?       
+  avaliations           Avaliations[]
 }
 
 
-model Taxed {
+model IsCanceled {
   id                     String          @id @default(uuid())
   apartment              Apartment       @relation(fields: [apartment_id], references: [id])
   apartment_id           String
+  isTaxed                Boolean         
   name                   String
   email                  String
   phone_number           String
-  dateGuest              DateTime
-  dateCancellation       DateTime        @default(now())      
-  createDate             DateTime        @default(now())
+  dateGuest              Int
+  dateCancellation       Int     
 }
 
 model WaitingList {
@@ -111,5 +112,10 @@ model Token {
   createDate             DateTime         @default(now())
 }
 
-
+model Avaliations{
+  id                     String           @id @default(uuid())
+  value                  Int
+  reservation            Reservation      @relation(fields: [reservation_id], references: [id])
+  reservation_id         String
+}
 

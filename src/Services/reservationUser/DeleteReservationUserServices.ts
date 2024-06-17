@@ -1,5 +1,6 @@
 import prismaClient from "../../prisma";
 import { SendEmail } from "../../utils/SendEmail";
+import dateInInt from "../../utils/DateInInt";
 
 interface ReservationProps{
     reservation_id: string,
@@ -43,8 +44,7 @@ class DeleteReservationUserServices {
 
     const reservationExist = await prismaClient.reservation.findFirst({
       where:{
-        id:reservation_id,
-        apartment_id:user.apartment.id
+        id:reservation_id
       },select:{
         date:true,
         reservationStatus:true
@@ -55,30 +55,23 @@ class DeleteReservationUserServices {
       throw new Error ('Essa reserva não existe!');
     }
 
+    const getDayNow = new Date();
+    const onDay = new Date();
 
-    const onDayMoreTwo = new Date();
-    onDayMoreTwo.setDate(onDayMoreTwo.getDate () + 2);
-    
-    const reservationInDate = new Date();
-    const stringDate = reservationExist.date.toString();
-    const yearDate =  stringDate.substring(0,4);
-    const monthDate = stringDate.substring(4,6);
-    const dayString = stringDate.substring(6,8);
-
-    const monthDateInt = parseInt(monthDate);
-    reservationInDate.setFullYear(parseInt(yearDate));
-    reservationInDate.setMonth(monthDateInt - 1);
-    reservationInDate.setDate(parseInt(dayString));
+    const onDayMoreTwo = dateInInt(getDayNow, 2);
+    const onDayCancell = dateInInt(onDay, 0);
 
 
-    if (onDayMoreTwo >=  reservationInDate && reservationExist.reservationStatus === true){     
-      const createTaxed = await prismaClient.taxed.create({
+    if (onDayMoreTwo >=  reservationExist.date && reservationExist.reservationStatus === true){     
+      const createTaxed = await prismaClient.isCanceled.create({
         data:{
           apartment_id:user.apartment.id,
-          dateGuest:reservationInDate,
+          dateGuest:reservationExist.date,
+          dateCancellation:onDayCancell,
           email:user.email,
           phone_number:user.phone_number,
-          name:`${user.name} ${user.lastname}`
+          name:`${user.name} ${user.lastname}`,
+          isTaxed:true
         }
       });
 
@@ -98,6 +91,18 @@ class DeleteReservationUserServices {
   `;
 
       SendEmail(user.email, mensagem);
+    }else{
+      const createFinsih = await prismaClient.isCanceled.create({
+        data:{
+          apartment_id:user.apartment.id,
+          dateGuest:reservationExist.date,
+          dateCancellation:dateInInt(getDayNow, 0),
+          email:user.email,
+          phone_number:user.phone_number,
+          name:`${user.name} ${user.lastname}`,
+          isTaxed:false
+        }
+      });
     }
 
     const thereAwaitList = await prismaClient.waitingList.findMany({

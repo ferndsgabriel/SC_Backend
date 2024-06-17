@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MyReservationsUserServices = void 0;
+exports.ListWithoutAvaliationUserServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
 const DateInInt_1 = __importDefault(require("../../utils/DateInInt"));
-class MyReservationsUserServices {
+class ListWithoutAvaliationUserServices {
     execute({ user_id }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!user_id) {
@@ -38,12 +38,10 @@ class MyReservationsUserServices {
                 where: {
                     apartment_id: userExist.apartment_id,
                     date: {
-                        gte: onDayInt
+                        lt: onDayInt
                     },
-                    OR: [
-                        { reservationStatus: true },
-                        { reservationStatus: null }
-                    ]
+                    reservationStatus: true,
+                    iWas: null
                 }, select: {
                     date: true,
                     start: true,
@@ -60,4 +58,4 @@ class MyReservationsUserServices {
         });
     }
 }
-exports.MyReservationsUserServices = MyReservationsUserServices;
+exports.ListWithoutAvaliationUserServices = ListWithoutAvaliationUserServices;

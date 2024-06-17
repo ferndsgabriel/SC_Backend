@@ -29,6 +29,7 @@ import { DeleteTowerAdmController } from "./Controllers/adm/DeleteTowerAdmContro
 import { EditTowerAdmController } from "./Controllers/adm/EditTowerAdmController";
 import { DeleteAptAdmController } from "./Controllers/adm/DeleteAptAdmController";
 import { ExcelAdmController, upload } from "./Controllers/adm/ExcelAdmController";
+import DashboardAdmController from "./Controllers/adm/DashboardAdmController";
 // user import ---------------------------------------------------------------
 import { ListAptUserController } from "./Controllers/user/ListAptUserController";
 import { CreateUserController } from "./Controllers/user/CreateUserController";
@@ -48,6 +49,8 @@ import { DeleteReservationUserController } from "./Controllers/reservationUser/D
 import { MyAgendamentosUserController } from "./Controllers/reservationUser/MyAgendamentosUserController";
 import { GuestAddController } from "./Controllers/reservationUser/GuestAddController";
 import { WaitListUserController } from "./Controllers/reservationUser/WaitListUserController";
+import { ListWithoutAvaliationUserController } from "./Controllers/reservationUser/ListWithoutAvaliationUserController";
+import { AvaliationUserController } from "./Controllers/reservationUser/AvaliationUserController";
 // adm import agendamento ---------------------------------------------------------------
 import { NewReservationsAdmController } from "./Controllers/reservationAdm/NewReservationsAdmController";
 import { SetNewReservationController } from "./Controllers/reservationAdm/SetNewReservationController";
@@ -83,6 +86,7 @@ router.post ("/adm/towers", AdmMiddlewares, new  CreateTowerAdmController().hand
 router.delete ("/adm/towers", AdmMiddlewares, new DeleteTowerAdmController().handle);
 router.put ("/adm/towers", AdmMiddlewares, new EditTowerAdmController().handle);
 router.post("/adm/excel",  AdmMiddlewares, upload.single('excel'), new ExcelAdmController().handle);
+router.get("/adm/dashboard",  AdmMiddlewares, new DashboardAdmController().handle);
 // routes user ---------------------------------------------------------------------
 router.get ("/towers", new ListTowersUserController().handle);
 router.get("/apts", new ListAptUserController().handle);
@@ -101,8 +105,10 @@ router.post("/reservations", UserMiddlewares, new CreateReservationUserControlle
 router.get("/allreservations", UserMiddlewares, new DateUnavailableController().handle);
 router.delete("/reservations", UserMiddlewares, new DeleteReservationUserController().handle);
 router.get("/myreservations", UserMiddlewares, new MyAgendamentosUserController().handle);
+router.get("/noavaliation", UserMiddlewares, new ListWithoutAvaliationUserController().handle);
 router.put("/guest", UserMiddlewares, new GuestAddController().handle);
 router.post("/list", UserMiddlewares, new WaitListUserController().handle);
+router.put("/avaliation", UserMiddlewares, new AvaliationUserController().handle);
 // routes adm agendamento ---------------------------------------------------------------------
 router.get("/adm/reservations", AdmMiddlewares, new NewReservationsAdmController().handle);
 router.put("/adm/setreservations", AdmMiddlewares, new SetNewReservationController().handle);

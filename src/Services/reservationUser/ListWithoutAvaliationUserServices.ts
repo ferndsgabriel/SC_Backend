@@ -6,7 +6,7 @@ interface userProps {
   user_id: string;
 }
 
-class MyReservationsUserServices {
+class ListWithoutAvaliationUserServices {
 
   async execute({ user_id}: userProps) {
 
@@ -35,12 +35,10 @@ class MyReservationsUserServices {
       where: {
         apartment_id:userExist.apartment_id,
         date: {
-          gte: onDayInt
+          lt: onDayInt
         },
-        OR:[
-          {reservationStatus:true},
-          {reservationStatus:null}
-        ]
+        reservationStatus:true,
+        iWas:null
       },select:{
         date:true,
         start:true,
@@ -59,4 +57,5 @@ class MyReservationsUserServices {
   }
 }
 
-export { MyReservationsUserServices };
+export { ListWithoutAvaliationUserServices };
+
