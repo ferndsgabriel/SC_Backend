@@ -32,6 +32,7 @@ const DeleteTowerAdmController_1 = require("./Controllers/adm/DeleteTowerAdmCont
 const EditTowerAdmController_1 = require("./Controllers/adm/EditTowerAdmController");
 const DeleteAptAdmController_1 = require("./Controllers/adm/DeleteAptAdmController");
 const ExcelAdmController_1 = require("./Controllers/adm/ExcelAdmController");
+const ViewDashboardController_1 = require("./Controllers/dashboard/ViewDashboardController");
 // user import ---------------------------------------------------------------
 const ListAptUserController_1 = require("./Controllers/user/ListAptUserController");
 const CreateUserController_1 = require("./Controllers/user/CreateUserController");
@@ -86,6 +87,7 @@ router.post("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new CreateTowerAdmCo
 router.delete("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new DeleteTowerAdmController_1.DeleteTowerAdmController().handle);
 router.put("/adm/towers", AdmMiddlewares_1.AdmMiddlewares, new EditTowerAdmController_1.EditTowerAdmController().handle);
 router.post("/adm/excel", AdmMiddlewares_1.AdmMiddlewares, ExcelAdmController_1.upload.single('excel'), new ExcelAdmController_1.ExcelAdmController().handle);
+router.post("/adm/dashboard", AdmMiddlewares_1.AdmMiddlewares, new ViewDashboardController_1.ViewDashboardController().handle);
 // routes user ---------------------------------------------------------------------
 router.get("/towers", new ListTowersUserController_1.ListTowersUserController().handle);
 router.get("/apts", new ListAptUserController_1.ListAptUserController().handle);
