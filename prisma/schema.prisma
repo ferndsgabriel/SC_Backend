@@ -20,14 +20,14 @@ model Adm {
   countCod              Int             @default(0)
   dateChangePass        DateTime        @default(now()) 
   token                 Token []
-  createDate            DateTime        @default(now())
+  createDate             DateTime?        @default(now())
 }
 
 model Tower{
   id                    String         @id @default(uuid())
   numberTower           String         
-  createDate            DateTime       @default(now())
   apartment             Apartment[]
+  createDate             DateTime?        @default(now())
 }
 
 model Apartment {
@@ -35,12 +35,12 @@ model Apartment {
   numberApt             String        
   payment               Boolean        @default(true)
   payday                DateTime?      @default(now())
-  createDate            DateTime       @default(now())
   tower                 Tower          @relation(fields: [tower_id], references: [id])
   tower_id              String
   Reservations          Reservation[] 
   user                  User[]
   isCanceled            IsCanceled[] 
+  createDate             DateTime?        @default(now())
 }
 
 model User {
@@ -61,7 +61,7 @@ model User {
   countCod              Int             @default(0)
   dateChangePass        DateTime        @default(now()) 
   token                 Token []
-  createDate            DateTime        @default(now())
+  createDate             DateTime?        @default(now())
 }
 
 model Reservation {
@@ -78,9 +78,9 @@ model Reservation {
   phone_number          String
   apartment             Apartment       @relation(fields: [apartment_id], references: [id])
   apartment_id          String
-  createDate            DateTime        @default(now())
   approvalDate          DateTime?       
   avaliations           Avaliations[]
+  createDate             DateTime?        @default(now())
 }
 
 
@@ -94,6 +94,7 @@ model IsCanceled {
   phone_number           String
   dateGuest              Int
   dateCancellation       Int     
+  createDate             DateTime?        @default(now())
 }
 
 model WaitingList {
@@ -101,6 +102,7 @@ model WaitingList {
   user                   User             @relation(fields: [user_id], references: [id])      
   user_id                String
   date                   Int
+  createDate             DateTime?        @default(now())
 }
 
 model Token {
@@ -109,7 +111,7 @@ model Token {
   adm_id                 String?
   user                   User?            @relation(fields: [user_id], references: [id])
   adm                    Adm?             @relation(fields: [adm_id], references: [id])
-  createDate             DateTime         @default(now())
+  createDate             DateTime?        @default(now())
 }
 
 model Avaliations{
@@ -117,5 +119,6 @@ model Avaliations{
   value                  Int
   reservation            Reservation      @relation(fields: [reservation_id], references: [id])
   reservation_id         String
+  createDate             DateTime?        @default(now())
 }
 
