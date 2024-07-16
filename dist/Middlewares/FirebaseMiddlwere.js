@@ -13,9 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
-const serviceAccount = require("../config/firebaseKeySC.json");
+require('dotenv').config();
+const teste = process.env.FIREBASE_TYPE;
+const credentialFB = {
+    "type": process.env.FIREBASE_TYPE,
+    "project_id": process.env.FIREBASE_PROJECT_ID,
+    "private_key_id": process.env.FIREBASE_KEY_ID,
+    "private_key": process.env.FIREBASE_PRIVATE_KEY,
+    "client_email": process.env.FIREBASE__CLIENT_EMAIL,
+    "client_id": process.env.FIREBASE__CLIENT_ID,
+    "auth_uri": process.env.FIREBASE_AUTH_URI,
+    "token_uri": process.env.FIREBASE_TOKEN_URI,
+    "auth_provider_x509_cert_url": process.env.FIREBASE_AUTH_PROVIDER,
+    "client_x509_cert_url": process.env.FIREBASE_CLIENT,
+    "universe_domain": process.env.FIREBASE_DOMAIN
+};
 firebase_admin_1.default.initializeApp({
-    credential: firebase_admin_1.default.credential.cert(serviceAccount),
+    credential: firebase_admin_1.default.credential.cert(credentialFB),
     storageBucket: 'gs://salaocondo.appspot.com',
 });
 const storage = firebase_admin_1.default.storage();
