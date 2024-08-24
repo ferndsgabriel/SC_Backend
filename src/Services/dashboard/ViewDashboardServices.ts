@@ -291,12 +291,14 @@ class ViewDashboardServices{
 
         const totalCollection = (totalCollectionCleaningService + totalCollectionTaxed + totalCollectionReservartion);
         const totalCollectionDetails = [
-            { category: totalCollection, Taxadas: totalCollectionTaxed, Confirmadas: totalCollectionReservartion, Limpeza: totalCollectionCleaningService }
-        ]; // detalhes de valores arrecadados para grafico 1
+            { category: 'Reservas', value:  totalCollectionReservartion},
+            { category: 'Cancelamentos', value: totalCollectionTaxed}, 
+            { category: 'Limpezas', value: totalCollectionCleaningService } 
+      ] //detalhes de valores arrecadados para grafico 1
 
         const reservationMadeDetails = [
-            { name: 'Concluídas', value: allReservationFinished },
-            { name: 'Em Andamento', value: allReservationProgress },
+            { name: 'Finalizadas', value: allReservationFinished },
+            { name: 'Aprovadas', value: allReservationProgress },
             { name: 'Em Análise', value: reservationUnderAnalysisQtd},
             { name: 'Canceladas', value: allCanceled }
         ]; // detalhes sobre os numeros de cada reservas
