@@ -71,7 +71,6 @@ class ViewDashboardServices{
                 start:true,
                 finish:true,
                 cleaningService:true,
-                approvalDate:true,
                 createDate:true,
                 guest:true,
                 date:true,
@@ -202,18 +201,28 @@ class ViewDashboardServices{
         const withAvaliation = await prismaClient.avaliations.findMany({
             where:{
                 createDate:{
-                    gt: period
+                    gte: period
                 }
-            }
+            },
         });
         const qtdAvaliation = withAvaliation.length;
 
-        let totalAvaliation = 0;
+        let totalAvaliationEase = 0;
+        let totalAvaliationTime = 0;
+        let totalAvaliationSpace = 0;
+        let totalAvaliationHygiene = 0;
+
         withAvaliation.forEach((item)=>{
-            totalAvaliation += item.value;
+            totalAvaliationEase += item.ease;
+            totalAvaliationTime += item.time;
+            totalAvaliationSpace += item.space;
+            totalAvaliationHygiene += item.hygiene
         });
 
-        const averageAvaliation = (totalAvaliation/qtdAvaliation); // vou usar já já 
+        const avaliationEase = (totalAvaliationEase/qtdAvaliation); 
+        const avaliationTime = (totalAvaliationTime/qtdAvaliation);
+        const avaliationSpace = (totalAvaliationSpace/qtdAvaliation)
+        const avaliationHygiene = (totalAvaliationHygiene/qtdAvaliation)
         // ------------------------------------------------- avaliation
 
         async function getTop3ApartmentsWithMostReservations() {
@@ -274,18 +283,16 @@ class ViewDashboardServices{
         const withMoreReservation = rawData.sort((a, b) => b.reservas - a.reservas); // moradores com mais reservas
         // ----------------------------------------------------------------------------
 
-        const totalVotes = qtdAvaliation
-        const averageRating = averageAvaliation 
-        const maxRating = 5;
-
         const avaliation = {
-            data:[
-            { name: "Média", value: averageRating },
-            { name: "Espaço", value: maxRating - averageRating  } 
+                data:[
+                { name: 'Limpeza', media: avaliationHygiene },
+                { name: 'Espaço', media: avaliationSpace },
+                { name: 'Rapidez', media: avaliationTime },
+                { name: 'Facilidade', media: avaliationEase },
             ],
-            averageRating:averageRating,
-            totalVotes:totalVotes // 
-        } // obter avaliação
+            qtd:qtdAvaliation
+        }
+        // obter avaliação
         // ----------------------------------------------------------------------------
 
 

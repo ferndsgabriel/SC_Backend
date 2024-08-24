@@ -72,15 +72,14 @@ model Reservation {
   date                  Int
   start                 Int
   finish                Int
-  iWas                 Boolean?       
+  isEvaluated           Boolean         @default(false)       
   name                  String
   email                 String
   phone_number          String
   apartment             Apartment       @relation(fields: [apartment_id], references: [id])
-  apartment_id          String
-  approvalDate          DateTime?       
+  apartment_id          String     
   avaliations           Avaliations[]
-  createDate             DateTime?        @default(now())
+  createDate            DateTime?        @default(now())
 }
 
 
@@ -116,7 +115,10 @@ model Token {
 
 model Avaliations{
   id                     String           @id @default(uuid())
-  value                  Int
+  ease                   Int
+  time                   Int
+  space                  Int
+  hygiene                Int
   reservation            Reservation      @relation(fields: [reservation_id], references: [id])
   reservation_id         String
   createDate             DateTime?        @default(now())
