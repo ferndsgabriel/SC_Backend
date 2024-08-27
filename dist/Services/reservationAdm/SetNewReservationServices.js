@@ -55,14 +55,12 @@ class SetNewReservationServices {
                     throw new Error('Você já aprovou uma reserva nessa data.');
                 }
             }
-            const onDay = new Date();
             const updatedReservation = yield prisma_1.default.reservation.update({
                 where: {
                     id: reservation_id
                 },
                 data: {
-                    reservationStatus: status,
-                    approvalDate: onDay
+                    reservationStatus: status
                 }
             });
             let message = '';

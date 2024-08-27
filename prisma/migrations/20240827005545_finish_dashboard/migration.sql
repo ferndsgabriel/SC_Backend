@@ -66,12 +66,11 @@ CREATE TABLE "Reservation" (
     "date" INTEGER NOT NULL,
     "start" INTEGER NOT NULL,
     "finish" INTEGER NOT NULL,
-    "iWas" BOOLEAN,
+    "isEvaluated" BOOLEAN NOT NULL DEFAULT false,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone_number" TEXT NOT NULL,
     "apartment_id" TEXT NOT NULL,
-    "approvalDate" TIMESTAMP(3),
     "createDate" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
@@ -115,7 +114,10 @@ CREATE TABLE "Token" (
 -- CreateTable
 CREATE TABLE "Avaliations" (
     "id" TEXT NOT NULL,
-    "value" INTEGER NOT NULL,
+    "ease" INTEGER NOT NULL,
+    "time" INTEGER NOT NULL,
+    "space" INTEGER NOT NULL,
+    "hygiene" INTEGER NOT NULL,
     "reservation_id" TEXT NOT NULL,
     "createDate" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 

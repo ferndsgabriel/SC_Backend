@@ -15,8 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AvaliationUserServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
 class AvaliationUserServices {
-    execute({ reservation_id, rating, iWas }) {
+    execute({ reservation_id, ease, space, time, hygiene }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!reservation_id || ease < 0 || space < 0 || time < 0 || hygiene < 0) {
+                throw new Error("Preencha todos os campos");
+            }
+            if (ease > 5 || space > 5 || time > 5 || hygiene > 5) {
+                throw new Error("Avaliação inválida");
+            }
             const getReservation = yield prisma_1.default.reservation.findFirst({
                 where: {
                     id: reservation_id
@@ -29,13 +35,16 @@ class AvaliationUserServices {
                 where: {
                     id: reservation_id
                 }, data: {
-                    iWas: iWas,
+                    isEvaluated: true,
                 }
             });
             const createAvaliation = yield prisma_1.default.avaliations.create({
                 data: {
-                    value: rating,
-                    reservation_id: reservation_id
+                    reservation_id: reservation_id,
+                    ease: ease,
+                    hygiene: hygiene,
+                    time: time,
+                    space: space
                 }
             });
             return ({ ok: true });

@@ -41,7 +41,7 @@ class ListWithoutAvaliationUserServices {
                         lt: onDayInt
                     },
                     reservationStatus: true,
-                    iWas: null
+                    isEvaluated: false
                 }, select: {
                     date: true,
                     start: true,

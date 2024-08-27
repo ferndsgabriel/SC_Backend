@@ -14,10 +14,10 @@ const AvaliationUserServices_1 = require("../../Services/reservationUser/Avaliat
 class AvaliationUserController {
     handle(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { reservation_id, rating, iWas } = req.body;
+            const { reservation_id, ease, space, time, hygiene } = req.body;
             const avaliationUserServices = new AvaliationUserServices_1.AvaliationUserServices();
             const avaliation = yield avaliationUserServices.execute({
-                reservation_id, rating, iWas
+                reservation_id, ease, space, time, hygiene
             });
             return res.json(avaliation);
         });
