@@ -3,9 +3,10 @@ import { compare, hash } from "bcryptjs";
 import {sign} from 'jsonwebtoken'
 import { FormatEmail } from "../../utils/FormatEmail";
 
+
 interface AdmRequest{
-    email:string
-    pass:string
+    email:string;
+    pass:string;
 }
 
 class AuthAdmServices{
@@ -51,6 +52,7 @@ class AuthAdmServices{
                 id:hashToken,
             }
         });
+
 
         return ({
             email:adm.email,

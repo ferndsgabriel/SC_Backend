@@ -10,28 +10,25 @@ class DetailUserServices{
             where:{
                 id:user_id
             },select: {
-                cpf: true,
                 id: true,
                 name: true,
                 lastname: true,
                 email:true,
                 photo: true,
-                accountStatus: true,
                 phone_number: true,
                 apartment_id: true,
-            apartment: {
-                select: {
-                numberApt: true,
-                tower_id: true,
-                payment: true,
-                payday: true,
-                tower: {
+                apartment: {
                     select: {
-                    numberTower: true,
+                    numberApt: true,
+                    tower_id: true,
+                    payment: true,
+                        tower: {
+                            select: {
+                            numberTower: true,
+                            },
+                        },
                     },
                 },
-                },
-            },
             },
         });
 

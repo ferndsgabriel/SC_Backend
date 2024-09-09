@@ -12,12 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// server.ts
 const express_1 = __importDefault(require("express"));
 require("express-async-errors");
 const cors_1 = __importDefault(require("cors"));
-const axios_1 = __importDefault(require("axios")); // Importe o axios
+const axios_1 = __importDefault(require("axios"));
 const routes_1 = require("./routes");
+const http_1 = require("http");
+const server_1 = require("./socketIo/server");
 const app = (0, express_1.default)();
+const httpServer = (0, http_1.createServer)(app);
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use(routes_1.router);
@@ -44,16 +48,16 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const dataFormatada = data.toISOString();
         return res.send({
             Data: dataFormatada,
-            Servidor: location
+            Servidor: location,
         });
     }
     catch (error) {
         return res.status(500).send('Erro ao conectar no servidor.');
     }
 }));
+// Tratamento de erros
 app.use((err, req, res, next) => {
     if (err instanceof Error) {
-        // Se for uma instancia do tipo error
         return res.status(400).json({
             error: err.message,
         });
@@ -63,4 +67,6 @@ app.use((err, req, res, next) => {
         message: 'Internal server error.',
     });
 });
-app.listen(3333, () => console.log('Servidor online!!!!'));
+(0, server_1.setupSocketServer)(httpServer);
+// Inicia o servidor HTTP e Socket.IO
+httpServer.listen(3333, () => console.log('Servidor online com Socket.IO!'));

@@ -12,28 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ListAptUserServices = void 0;
+exports.ReadMessageUserServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
-class ListAptUserServices {
-    execute() {
+class ReadMessageUserServices {
+    execute({ apartment_id }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const apt = yield prisma_1.default.apartment.findMany({
+            if (!apartment_id) {
+                throw new Error('Preencha todos os campos');
+            }
+            const conversations = yield prisma_1.default.conversation.findFirst({
+                where: {
+                    apartment_id
+                },
                 select: {
-                    id: true,
-                    numberApt: true,
-                    tower_id: true,
-                    user: true,
-                    tower: {
-                        select: {
-                            numberTower: true
+                    messages: {
+                        orderBy: {
+                            date: 'asc'
                         }
-                    }
-                }, orderBy: {
-                    numberApt: 'asc'
+                    },
+                    id: true,
                 }
             });
-            return apt;
+            return conversations;
         });
     }
 }
-exports.ListAptUserServices = ListAptUserServices;
+exports.ReadMessageUserServices = ReadMessageUserServices;

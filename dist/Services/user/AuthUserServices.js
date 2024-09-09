@@ -23,46 +23,73 @@ class AuthUserServices {
             if (!email || !pass) {
                 throw new Error('Dados incompletos: Envie todos os campos obrigatórios.');
             }
-            ;
             const user = yield prisma_1.default.user.findFirst({
                 where: {
-                    email: (0, FormatEmail_1.FormatEmail)(email)
-                }
+                    email: (0, FormatEmail_1.FormatEmail)(email),
+                }, select: {
+                    id: true,
+                    name: true,
+                    lastname: true,
+                    email: true,
+                    photo: true,
+                    phone_number: true,
+                    apartment_id: true,
+                    pass: true,
+                    accountStatus: true,
+                    apartment: {
+                        select: {
+                            numberApt: true,
+                            tower_id: true,
+                            payment: true,
+                            tower: {
+                                select: {
+                                    numberTower: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             if (!user) {
-                throw new Error("Erro de validação: Seus dados estão incorretos. Verifique as informações e tente novamente.");
+                throw new Error('Erro de validação: Seus dados estão incorretos. Verifique as informações e tente novamente.');
             }
             const compareSenha = yield (0, bcryptjs_1.compare)(pass, user.pass);
             if (!compareSenha) {
-                throw new Error("Erro de validação: Seus dados estão incorretos. Verifique as informações e tente novamente.");
+                throw new Error('Erro de validação: Seus dados estão incorretos. Verifique as informações e tente novamente.');
             }
             if (user.accountStatus === null) {
-                throw new Error("Status de análise: Seu perfil está atualmente em processo de análise. Aguarde a conclusão.");
+                throw new Error('Status de análise: Seu perfil está atualmente em processo de análise. Aguarde a conclusão.');
             }
             if (user.accountStatus === false) {
-                throw new Error("Recusa de acesso: Seu pedido foi recusado devido a informações inadequadas.");
+                throw new Error('Recusa de acesso: Seu pedido foi recusado devido a informações inadequadas.');
             }
             const token = (0, jsonwebtoken_1.sign)({
                 email: user.email,
-                name: user.name
+                name: user.name,
             }, process.env.UJWT_SECRET, {
                 subject: user.id,
-                expiresIn: "30d"
+                expiresIn: '30d',
             });
             const hashToken = yield (0, bcryptjs_1.hash)(token, 8);
             const setToken = yield prisma_1.default.token.create({
                 data: {
                     user_id: user.id,
                     id: hashToken,
-                }
+                },
             });
-            return {
-                email: user.email,
+            const userData = {
+                id: user.id,
                 name: user.name,
                 lastname: user.lastname,
-                id: user.id,
+                email: user.email,
+                photo: user.photo,
+                phone_number: user.phone_number,
+                apartment_id: user.apartment_id,
+                apartment: user.apartment
+            };
+            return {
+                userData: userData,
                 token: token,
-                phone_number: user.phone_number
             };
         });
     }

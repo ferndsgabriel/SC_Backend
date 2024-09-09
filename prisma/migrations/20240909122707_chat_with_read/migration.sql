@@ -124,6 +124,28 @@ CREATE TABLE "Avaliations" (
     CONSTRAINT "Avaliations_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Conversation" (
+    "id" TEXT NOT NULL,
+    "apartment_id" TEXT NOT NULL,
+    "createDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Conversation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Message" (
+    "id" TEXT NOT NULL,
+    "conversation_id" TEXT NOT NULL,
+    "from" TEXT NOT NULL,
+    "to" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "delivered" BOOLEAN NOT NULL DEFAULT false,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Adm_email_key" ON "Adm"("email");
 
@@ -165,3 +187,9 @@ ALTER TABLE "Token" ADD CONSTRAINT "Token_adm_id_fkey" FOREIGN KEY ("adm_id") RE
 
 -- AddForeignKey
 ALTER TABLE "Avaliations" ADD CONSTRAINT "Avaliations_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "Reservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_apartment_id_fkey" FOREIGN KEY ("apartment_id") REFERENCES "Apartment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_conversation_id_fkey" FOREIGN KEY ("conversation_id") REFERENCES "Conversation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

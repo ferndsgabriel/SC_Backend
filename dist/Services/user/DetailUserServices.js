@@ -24,13 +24,11 @@ class DetailUserServices {
                 where: {
                     id: user_id
                 }, select: {
-                    cpf: true,
                     id: true,
                     name: true,
                     lastname: true,
                     email: true,
                     photo: true,
-                    accountStatus: true,
                     phone_number: true,
                     apartment_id: true,
                     apartment: {
@@ -38,7 +36,6 @@ class DetailUserServices {
                             numberApt: true,
                             tower_id: true,
                             payment: true,
-                            payday: true,
                             tower: {
                                 select: {
                                     numberTower: true,

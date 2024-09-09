@@ -8,32 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ListAptUserServices = void 0;
-const prisma_1 = __importDefault(require("../../prisma"));
-class ListAptUserServices {
-    execute() {
+exports.ReadMessageAdmController = void 0;
+const ReadMessageAdmServices_1 = require("../../Services/adm/ReadMessageAdmServices");
+class ReadMessageAdmController {
+    handle(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const apt = yield prisma_1.default.apartment.findMany({
-                select: {
-                    id: true,
-                    numberApt: true,
-                    tower_id: true,
-                    user: true,
-                    tower: {
-                        select: {
-                            numberTower: true
-                        }
-                    }
-                }, orderBy: {
-                    numberApt: 'asc'
-                }
+            const { conversationId } = req.body;
+            const readMessage = new ReadMessageAdmServices_1.ReadMessageAdmServices();
+            const message = yield readMessage.execute({
+                conversationId
             });
-            return apt;
+            return res.json(message);
         });
     }
 }
-exports.ListAptUserServices = ListAptUserServices;
+exports.ReadMessageAdmController = ReadMessageAdmController;

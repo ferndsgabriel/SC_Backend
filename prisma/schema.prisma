@@ -31,16 +31,17 @@ model Tower{
 }
 
 model Apartment {
-  id                    String         @id @default(uuid())
-  numberApt             String        
-  payment               Boolean        @default(true)
-  payday                DateTime?      @default(now())
-  tower                 Tower          @relation(fields: [tower_id], references: [id])
-  tower_id              String
-  Reservations          Reservation[] 
-  user                  User[]
-  isCanceled            IsCanceled[] 
-  createDate             DateTime?        @default(now())
+  id                String         @id @default(uuid())
+  numberApt         String
+  payment           Boolean        @default(true)
+  payday            DateTime?      @default(now())
+  tower             Tower          @relation(fields: [tower_id], references: [id])
+  tower_id          String
+  Reservations      Reservation[] 
+  user              User[]
+  isCanceled        IsCanceled[] 
+  createDate        DateTime?      @default(now())
+  messages          Conversation[] 
 }
 
 model User {
@@ -124,3 +125,22 @@ model Avaliations{
   createDate             DateTime?        @default(now())
 }
 
+model Conversation {
+  id                String       @id @default(uuid())
+  apartment_id      String
+  apartment         Apartment   @relation(fields: [apartment_id], references: [id])
+  messages          Message[]
+  updateDate        DateTime? 
+  createDate        DateTime    @default(now())
+}
+
+model Message {
+  id                String       @id @default(uuid())
+  conversation_id   String
+  conversation      Conversation @relation(fields: [conversation_id], references: [id])
+  from              String       
+  to                String       
+  content           String
+  delivered         Boolean      @default(false)
+  date              DateTime     @default(now())
+}

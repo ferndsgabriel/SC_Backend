@@ -7,7 +7,12 @@ class ListAptUserServices{
                 id:true,
                 numberApt:true,
                 tower_id:true,
-                user:true
+                user:true,
+                tower:{
+                    select:{
+                        numberTower:true
+                    }
+                }
             },orderBy:{
                 numberApt:'asc'
             }
