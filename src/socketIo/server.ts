@@ -42,10 +42,14 @@ interface conversationsAdmProps {
 export function setupSocketServer(httpServer: HTTPServer) {
     const io = new Server(httpServer, {
         cors: {
-            origin: '*',
+            origin: [
+                'https://salaocondoadm.vercel.app',
+                'https://salaocondo.vercel.app'
+            ],
             methods: ['GET', 'POST'],
         },
     });
+    
 
     async function getMessages(apartment_id: string) {
         const readMessageUserServices = new ReadMessageUserServices();
