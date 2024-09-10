@@ -94,7 +94,6 @@ export function setupSocketServer(httpServer: HTTPServer) {
                 date: data.date,
             });
 
-            console.log(response)
             socket.emit('newMessage', response);
 
             socket.broadcast.emit('newMessage', response);
