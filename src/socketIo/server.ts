@@ -10,8 +10,12 @@ import _ from 'lodash';
 
 interface dataMessageProps {
     id: string;
-    content: string;
+    conversation_id:string;
+    content:string;
+    from: string;
+    to: string;
     date: Date;
+    conversation: { apartment_id:string; };
 }
 
 interface messageProps {
@@ -90,8 +94,11 @@ export function setupSocketServer(httpServer: HTTPServer) {
                 date: data.date,
             });
 
+            console.log(response)
             socket.emit('newMessage', response);
+
             socket.broadcast.emit('newMessage', response);
+            
             await updateConversations(socket);
         } catch (error) {
             handleError(error);
@@ -104,15 +111,15 @@ export function setupSocketServer(httpServer: HTTPServer) {
                 const messages = await getMessages(id);
                 socket.emit('oldMessages', messages);
             }
-        });
+        }); //aqui me conecto conecto como user e pego mensagens anteriores
 
         socket.on('sendMessageUser', (data: dataMessageProps) =>
             sendMessage(socket, new SendMessageUserServices(), data)
-        );
+        );  // envio mensagem com o user
 
         socket.on('sendMessageAdm', (data: dataMessageProps) =>
             sendMessage(socket, new SendMessageAdmServices(), data)
-        );
+        ); // envio mensagem com o user
 
         socket.on('deliverMessageUser', async ({ id }) => {
             const gotANewMessageUserServices = new GotANewMessageUserServices();

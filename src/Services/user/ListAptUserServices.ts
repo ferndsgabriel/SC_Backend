@@ -1,26 +1,38 @@
 import prismaClient from "../../prisma";
 
-class ListAptUserServices{
-    async execute(){
+class ListAptUserServices {
+    async execute() {
         const apt = await prismaClient.apartment.findMany({
-        select:{
-                id:true,
-                numberApt:true,
-                tower_id:true,
-                user:true,
-                tower:{
-                    select:{
-                        numberTower:true
-                    }
-                }
-            },orderBy:{
-                numberApt:'asc'
-            }
-        })
+        select: {
+            id: true,
+            numberApt: true,
+            tower_id: true,
+            user: {
+            select: {
+                photo: true,
+                name: true,
+            },
+            },
+            tower: {
+            select: {
+                numberTower: true,
+            },
+            },
+        },
+        orderBy: [
+            {
+            tower: {
+                numberTower: 'desc',
+            },
+            },
+            {
+            numberApt: 'asc',
+            },
+        ],
+        });
 
-        return apt
+        return apt;
     }
-
 }
 
-export {ListAptUserServices}
+export { ListAptUserServices };
