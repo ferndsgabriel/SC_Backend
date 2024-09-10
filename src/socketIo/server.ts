@@ -49,7 +49,6 @@ export function setupSocketServer(httpServer: HTTPServer) {
             methods: ['GET', 'POST'],
         },
     });
-    
 
     async function getMessages(apartment_id: string) {
         const readMessageUserServices = new ReadMessageUserServices();
@@ -104,6 +103,21 @@ export function setupSocketServer(httpServer: HTTPServer) {
     }
 
     io.on('connection', (socket) => {
+        console.log('Cliente conectado:', socket.id);
+
+        // Define um timeout para as conexões do socket
+        const timeout = setTimeout(() => {
+            if (!socket.connected) {
+                console.log('Cliente desconectado por timeout:', socket.id);
+                socket.disconnect(true);
+            }
+        }, 30000); // Timeout de 30 segundos
+
+        socket.on('disconnect', () => {
+            console.log('Cliente desconectado:', socket.id);
+            clearTimeout(timeout); // Limpa o timeout se o cliente desconectar antes do tempo
+        });
+
         socket.on('getId', async ({ id }) => {
             if (id) {
                 const messages = await getMessages(id);
@@ -150,10 +164,6 @@ export function setupSocketServer(httpServer: HTTPServer) {
             } catch (error) {
                 handleError(error);
             }
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Cliente desconectado:', socket.id);
         });
     });
 }
