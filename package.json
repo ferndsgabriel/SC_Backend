@@ -5,9 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "nodemon dist/server.js",
-    "build": "tsc && prisma generate",
-    "postinstall": "prisma generate"
+    "start": " dist/server.js",
+    "build": "tsc && prisma generate"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
