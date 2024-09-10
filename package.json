@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": " dist/server.js",
+    "start": "nodemon dist/server.js",
     "build": "tsc && prisma generate"
   },
   "devDependencies": {
