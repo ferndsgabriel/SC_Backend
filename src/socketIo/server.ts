@@ -42,10 +42,7 @@ interface conversationsAdmProps {
 export function setupSocketServer(httpServer: HTTPServer) {
     const io = new Server(httpServer, {
         cors: {
-            origin: [
-                'https://salaocondoadm.vercel.app',
-                'https://salaocondo.vercel.app'
-            ],
+            origin: '*',
             methods: ['GET', 'POST'],
         },
     });
@@ -73,7 +70,6 @@ export function setupSocketServer(httpServer: HTTPServer) {
 
     function handleError(error: any) {
         console.log('Error:', error);
-        // Aqui você pode implementar uma lógica adicional de tratamento de erros, como notificação de erro.
     }
 
     async function updateConversations(socket: Socket) {
@@ -103,21 +99,6 @@ export function setupSocketServer(httpServer: HTTPServer) {
     }
 
     io.on('connection', (socket) => {
-        console.log('Cliente conectado:', socket.id);
-
-        // Define um timeout para as conexões do socket
-        const timeout = setTimeout(() => {
-            if (!socket.connected) {
-                console.log('Cliente desconectado por timeout:', socket.id);
-                socket.disconnect(true);
-            }
-        }, 30000); // Timeout de 30 segundos
-
-        socket.on('disconnect', () => {
-            console.log('Cliente desconectado:', socket.id);
-            clearTimeout(timeout); // Limpa o timeout se o cliente desconectar antes do tempo
-        });
-
         socket.on('getId', async ({ id }) => {
             if (id) {
                 const messages = await getMessages(id);
@@ -164,6 +145,10 @@ export function setupSocketServer(httpServer: HTTPServer) {
             } catch (error) {
                 handleError(error);
             }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Cliente desconectado:', socket.id);
         });
     });
 }
