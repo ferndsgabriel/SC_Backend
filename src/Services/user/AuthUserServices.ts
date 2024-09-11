@@ -19,6 +19,7 @@ class AuthUserServices {
             where: {
                 email: FormatEmail(email),
             },select: {
+                sessionToken:true,
                 id: true,
                 name: true,
                 lastname: true,
@@ -84,14 +85,8 @@ class AuthUserServices {
 
         const hashToken = await hash(token, 8);
 
-        const setToken = await prismaClient.token.create({
-            data: {
-                user_id: user.id,
-                id: hashToken,
-            },
-        });
-
-        const userData = {
+        const userData = {  
+            sessionToken:user.sessionToken,
             id: user.id,
             name: user.name,
             lastname: user.lastname,
@@ -99,7 +94,7 @@ class AuthUserServices {
             photo: user.photo,
             phone_number: user.phone_number,
             apartment_id: user.apartment_id,
-            apartment:user.apartment
+            apartment:user.apartment,
         }
         
 

@@ -3,6 +3,7 @@ import prismaClient from "../../prisma";
 import { FormatPhone } from "../../utils/FormatPhone";
 import { FormatEmail } from "../../utils/FormatEmail";
 import { Capitalize } from "../../utils/Capitalize";
+import { randomUUID } from "crypto";
 
 interface AdmRequest{
     email:string;
@@ -16,56 +17,60 @@ interface AdmRequest{
 class CreateAdmServices{
     async execute({email, pass, cod, name, lastname, phone_number}:AdmRequest){
     
-    function onlyString(string:string){
-        if (!/^[a-zA-Z]+$/.test(string)) {
-            return false;
+        function onlyString(string:string){
+            if (!/^[a-zA-Z]+$/.test(string)) {
+                return false;
+            }
+            return true;
         }
-        return true;
-    }
 
-    if (!email || !pass || !cod || !name || !lastname || !phone_number){
-        throw new Error('Dados incompletos: Envie todos os campos obrigatórios.');
-    }  
-    if (name.length < 3 || lastname.length < 4){
-        throw new Error('Nome inválido.');
-    }
-    if (!onlyString(name) || !onlyString(lastname)){
-        throw new Error('Nome inválido.');
-    }
-    const EmailExist = await prismaClient.adm.findFirst({
-        where:{
-            email:FormatEmail(email)
+        if (!email || !pass || !cod || !name || !lastname || !phone_number){
+            throw new Error('Dados incompletos: Envie todos os campos obrigatórios.');
+        }  
+        if (name.length < 3 || lastname.length < 4){
+            throw new Error('Nome inválido.');
         }
-    })
-
-    if (EmailExist){
-        throw new Error("Email já existente.");
-    }
-    const numberExist = await prismaClient.user.findFirst({
-        where:{
-            phone_number:FormatPhone(phone_number)
+        if (!onlyString(name) || !onlyString(lastname)){
+            throw new Error('Nome inválido.');
         }
-    })
-    if (numberExist){
-        throw new Error('Telefone já vinculado a outra conta.');
-    }
-    
-    const compareSenhaADM = await compare(cod, process.env.ADM_PASS!);
+        const EmailExist = await prismaClient.adm.findFirst({
+            where:{
+                email:FormatEmail(email)
+            }
+        })
 
-    
-    if(!compareSenhaADM){
-        throw new Error('Código de administrador incorreto.');
-    }
+        if (EmailExist){
+            throw new Error("Email já existente.");
+        }
+        const numberExist = await prismaClient.user.findFirst({
+            where:{
+                phone_number:FormatPhone(phone_number)
+            }
+        })
+        if (numberExist){
+            throw new Error('Telefone já vinculado a outra conta.');
+        }
+        
+        const compareSenhaADM = await compare(cod, process.env.ADM_PASS!);
 
-    const admHash = await hash(pass, 8);
-    
+        
+        if(!compareSenhaADM){
+            throw new Error('Código de administrador incorreto.');
+        }
+
+        const admHash = await hash(pass, 8);
+        
+        const uuid = randomUUID();
+
+
         const adm = await prismaClient.adm.create({
             data:{
                 email:FormatEmail(email),
                 pass:admHash,
                 name:Capitalize(name),
                 lastname: Capitalize(lastname),
-                phone_number:FormatPhone(phone_number)
+                phone_number:FormatPhone(phone_number),
+                sessionToken:uuid,
             },select:{
                 email:true,
                 id:true,
@@ -77,6 +82,7 @@ class CreateAdmServices{
         return ({
             adm
         })
+
     }
 }
 

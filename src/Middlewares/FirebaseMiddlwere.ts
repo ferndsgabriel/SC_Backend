@@ -2,7 +2,6 @@ import admin from "firebase-admin";
 import { Request, Response, NextFunction } from "express";
 require('dotenv').config();
 
-const teste = process.env.FIREBASE_TYPE
 
 const credentialFB: any = {
     "type": process.env.FIREBASE_TYPE,

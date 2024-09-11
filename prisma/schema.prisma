@@ -9,18 +9,18 @@ datasource db {
 
 
 model Adm {
-  id                    String       @id @default(uuid())
-  email                 String       @unique
+  id                    String          @id @default(uuid())
+  email                 String          @unique
   pass                  String
   name                  String
   lastname              String
-  phone_number          String        @unique
+  phone_number          String          @unique
+  sessionToken          String?          
   codRecovery           String? 
   codDate               DateTime?       @default(now())
   countCod              Int             @default(0)
   dateChangePass        DateTime        @default(now()) 
-  token                 Token []
-  createDate             DateTime?        @default(now())
+  createDate            DateTime?       @default(now())
 }
 
 model Tower{
@@ -51,6 +51,7 @@ model User {
   lastname              String
   email                 String          @unique
   pass                  String
+  sessionToken          String?      
   photo                 String?         @unique      
   accountStatus         Boolean?    
   phone_number          String          @unique
@@ -61,8 +62,7 @@ model User {
   codDate               DateTime?       @default(now())
   countCod              Int             @default(0)
   dateChangePass        DateTime        @default(now()) 
-  token                 Token []
-  createDate             DateTime?        @default(now())
+  createDate            DateTime?        @default(now())
 }
 
 model Reservation {
@@ -102,15 +102,6 @@ model WaitingList {
   user                   User             @relation(fields: [user_id], references: [id])      
   user_id                String
   date                   Int
-  createDate             DateTime?        @default(now())
-}
-
-model Token {
-  id                     String           @id
-  user_id                String?
-  adm_id                 String?
-  user                   User?            @relation(fields: [user_id], references: [id])
-  adm                    Adm?             @relation(fields: [adm_id], references: [id])
   createDate             DateTime?        @default(now())
 }
 

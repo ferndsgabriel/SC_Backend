@@ -4,6 +4,7 @@ import { hash } from "bcryptjs";
 import { FormatPhone } from "../../utils/FormatPhone";
 import { Capitalize } from "../../utils/Capitalize";
 import { FormatEmail } from "../../utils/FormatEmail";
+import { randomUUID } from "crypto";
 
 interface UserRequest {
   name: string;
@@ -79,6 +80,8 @@ class CreateUserService {
 
     const hashPass = await hash(pass, 8);
 
+    const uuid = randomUUID();
+
     const user = await prismaClient.user.create({
       data: {
         name: Capitalize(name),
@@ -89,7 +92,7 @@ class CreateUserService {
         apartment_id: apartament_id,
         phone_number:FormatPhone(phone_number),
         accountStatus: null,  
-        
+        sessionToken:uuid
       },
       select: {
         name: true,

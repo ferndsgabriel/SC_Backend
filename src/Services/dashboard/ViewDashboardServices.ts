@@ -1,343 +1,238 @@
 import prismaClient from "../../prisma";
 import dateInInt from "../../utils/DateInInt";
 
-
-interface aptProps{
-    payment:boolean,
+interface aptProps {
+    payment: boolean;
 }
+
 interface dashBoardProps {
-    period:Date
+    period: Date;
 }
 
-class ViewDashboardServices{
-    async execute({period}:dashBoardProps){
-        
-
-        const allUserInSystem = await prismaClient.user.findMany({
-            where:{
-                createDate:{
-                    gte: period
+class ViewDashboardServices {
+    async execute({ period }: dashBoardProps) {
+        // Consulta para moradores
+        const allUsersInSystem = await prismaClient.user.findMany({
+            where: {
+                createDate: {
+                    lte: period
                 }
             }
         });
-        const allUser = allUserInSystem.length;        // qtd moradores
-        //----------------------------------------------------------
+        const totalUsers = allUsersInSystem.length ?? 0;
 
-
-        const allAdmInSystem = await prismaClient.adm.findMany({
-            where:{
-                createDate:{
-                    gte: period
+        // Consulta para administradores
+        const allAdminsInSystem = await prismaClient.adm.findMany({
+            where: {
+                createDate: {
+                    lte: period
                 }
             }
         });
-        const allAdm = allAdmInSystem.length; // qtd adm
-        //----------------------------------------------------------
+        const totalAdmins = allAdminsInSystem.length ?? 0;
 
+        // Consulta para torres
+        const allTowersInSystem = await prismaClient.tower.findMany();
+        const totalTowers = allTowersInSystem.length ?? 0;
 
-        const allTowerInSystem = await prismaClient.tower.findMany({
-            where:{
-                createDate:{
-                    gte: period
-                }
+        // Consulta para apartamentos (sem filtro de data)
+        const allApartmentsInSystem = await prismaClient.apartment.findMany({
+            select: {
+                payment: true,
+                user: true
             }
         });
-        const allTowers = allTowerInSystem.length; // qtd torre
-          //----------------------------------------------------------
+        const totalApartments = allApartmentsInSystem.length ?? 0;
 
-        
-        const allAptInSystem = await prismaClient.apartment.findMany({
-            where:{
-                createDate:{
-                    gte: period
-                }
-            },
-            select:{
-                payment:true,
-                user:true
-            }
-        });
-        const allApts = allAptInSystem.length; // qtd apartamento
-          //----------------------------------------------------------
-        
-        
-        const allReservationInSystem = await prismaClient.reservation.findMany({
-            where:{
-                createDate:{
-                    gte: period
+        // Consulta para reservas (aplicando filtro de data)
+        const allReservationsInSystem = await prismaClient.reservation.findMany({
+            where: {
+                createDate: {
+                    lte: period
                 }
             },
-            select:{
-                start:true,
-                finish:true,
-                cleaningService:true,
-                createDate:true,
-                guest:true,
-                date:true,
-                reservationStatus:true
+            select: {
+                start: true,
+                finish: true,
+                cleaningService: true,
+                createDate: true,
+                guest: true,
+                date: true,
+                reservationStatus: true
             }
-        }); 
-        
-        const allReservationInSystemlength = allReservationInSystem.length // qtd de reservas = em analise e  aprovadas 
-        //----------------------------------------------------------
+        });
+        const totalReservations = allReservationsInSystem.length ?? 0;
 
-
-        const allReservationCanceledInSystem = await prismaClient.isCanceled.findMany({
-            where:{
-                createDate:{
-                    gte: period
+        // Consulta para reservas canceladas (aplicando filtro de data)
+        const allCanceledReservationsInSystem = await prismaClient.isCanceled.findMany({
+            where: {
+                createDate: {
+                    lte: period
                 }
             }
         });
+        const totalCanceledReservations = allCanceledReservationsInSystem.length ?? 0;
 
-        const allCanceled = allReservationCanceledInSystem.length; // qtd de reservas canceladas
-        //----------------------------------------------------------
+        // Total de reservas feitas (soma de reservas normais e canceladas)
+        const totalReservationsMade = (totalCanceledReservations + totalReservations) ?? 0;
 
+        // Reservas em análise (aplicando filtro de data)
+        const reservationsUnderAnalysis = allReservationsInSystem.filter(item => item.reservationStatus === null);
+        const totalReservationsUnderAnalysis = reservationsUnderAnalysis.length ?? 0;
 
-        const allReservationMadeInSystem = (allCanceled + allReservationInSystemlength)// todas todas 
-        // pego todas que estão na tabelas de reservas, analise ou aprovadas e soma com as canceladas
-        //----------------------------------------------------------
-
-        const reservationUnderAnalysis = [];
-        allReservationInSystem.forEach((item)=>{
-            if (item.reservationStatus === null){
-                reservationUnderAnalysis.push(item);
-            }
-        });
-
-        const reservationUnderAnalysisQtd = reservationUnderAnalysis.length; // qtd de reservas em analise apenas
-        //----------------------------------------------------------
-
-
+        // Reservas finalizadas e em progresso (aplicando filtro de data)
         const now = new Date();
-        const ReservationFinishedInSystem = <object[]>[];
-        const ReservationInProgress = <object[]>[];
+        const reservationsFinished = allReservationsInSystem.filter(item => item.date < dateInInt(now, 0) && item.reservationStatus === true);
+        const reservationsInProgress = allReservationsInSystem.filter(item => item.date > dateInInt(now, 0) && item.reservationStatus === true);
+        const totalReservationsFinished = reservationsFinished.length ?? 0;
+        const totalReservationsInProgress = reservationsInProgress.length ?? 0;
 
-        allReservationInSystem.forEach((item)=>{
-            if (item.date < dateInInt(now, 0) && item.reservationStatus === true ){
-                ReservationFinishedInSystem.push(item)
-            }else if (item.date > dateInInt(now, 0) && item.reservationStatus === true ){
-                ReservationInProgress.push(item)
-            }
-        });
-
-        const allReservationFinished = ReservationFinishedInSystem.length; // qtd de reservas finalizadas
-        const allReservationProgress = ReservationInProgress.length; // qtd de reservas em progresso
-        //----------------------------------------------------------
-
-
-        const theresGuest: string[] = [];
+        // Total de hóspedes (aplicando filtro de data)
+        const guestsList: string[] = [];
         let totalGuests = 0;
-        
-        allReservationInSystem.forEach((item) => {
+
+        allReservationsInSystem.forEach(item => {
             if (item.guest) {
-                theresGuest.push(item.guest);
+                guestsList.push(item.guest);
             }
         });
 
-        theresGuest.forEach(item => {
-            const names = item.split(',').filter(name => name.trim() !== ''); 
+        guestsList.forEach(item => {
+            const names = item.split(',').filter(name => name.trim() !== '');
             totalGuests += names.length;
         });
-        
-        const averageGuestsPerReservation = totalGuests / theresGuest.length; //taxa de ocupação
-        //----------------------------------------------------------
 
+        const averageGuestsPerReservation = (totalGuests / guestsList.length || 0).toFixed(2);
 
-        const allTaxedInSystem = [];
+        // Cancelamentos com taxa (aplicando filtro de data)
+        const taxedReservations = allCanceledReservationsInSystem.filter(item => item.isTaxed === true);
+        const totalTaxedReservations = taxedReservations.length ?? 0;
 
-        
-        allReservationCanceledInSystem.forEach((item)=>{
-            if (item.isTaxed === true){
-                allTaxedInSystem.push(item);
-            }
-        });
-        const allTaxed = allTaxedInSystem.length; // canceladas com taxa
-     //----------------------------------------------------------
-        
-        const AllAptOcupation = <object []> [];
-        const apartmentCompliant = <object[]> [];
-        const apartmentDefaulter = <object []> [];
-        
-        allAptInSystem.forEach((item)=>{
-            if (item.user.length > 0){
-                AllAptOcupation.push(item);
-            }
-        });
-        AllAptOcupation.forEach((item:aptProps)=>{
-            if (item.payment){
-                apartmentCompliant.push(item)
-            }else{
-                apartmentDefaulter.push(item)
-            }
-        })
+        // Apartamentos ocupados (sem filtro de data)
+        const apartmentsWithOccupancy = allApartmentsInSystem.filter(item => item.user.length > 0);
+        const compliantApartments = apartmentsWithOccupancy.filter(item => item.payment);
+        const defaulterApartments = apartmentsWithOccupancy.filter(item => !item.payment);
+        const totalCompliantApartments = compliantApartments.length ?? 0;
+        const totalDefaulterApartments = defaulterApartments.length ?? 0;
 
-        const allCompliant = apartmentCompliant.length; // adimplentes 
-        const allDefaulter = apartmentDefaulter.length; //inadimplentes
-     //----------------------------------------------------------
+        // Arrecadação (aplicando filtro de data)
+        const taxRate = 80;
+        const totalCollectionTaxed = totalTaxedReservations * taxRate ?? 0;
 
+        const cleaningServiceRate = 80;
+        const reservationsWithCleaningService = reservationsFinished.filter(item => item.cleaningService);
+        const totalCollectionCleaningService = reservationsWithCleaningService.length * cleaningServiceRate ?? 0;
 
-        const rateValueTaxed = 80; // Valor da taxa de reserva
-        const totalCollectionTaxed = (allTaxed * rateValueTaxed); // arrecadado com taxas
-        //----------------------------------------------------------
+        const reservationRate = 100;
+        const totalCollectionReservations = totalReservationsFinished * reservationRate ?? 0;
 
-        const listReservationWithCleaningServices = <object []>[];
-        const rateCleaningService = 80;
-
-        ReservationFinishedInSystem.forEach((item:any)=>{
-            if (item.cleaningService){
-                listReservationWithCleaningServices.push(item);
-            }
-        });
-
-        const totalCollectionCleaningService = (listReservationWithCleaningServices.length * rateCleaningService); // arrecadado com limpeza
-        //----------------------------------------------------------
-    
-
-        const rateValueReservation = 100
-        const totalCollectionReservartion =  (allReservationFinished*rateValueReservation); // arrecadado com reservas
-        //----------------------------------------------------------
-
-        const withAvaliation = await prismaClient.avaliations.findMany({
-            where:{
-                createDate:{
-                    gte: period
+        // Avaliações (aplicando filtro de data)
+        const allAvaliation = await prismaClient.avaliations.findMany({
+            where: {
+                createDate: {
+                    lte: period
                 }
-            },
+            }
         });
-        const qtdAvaliation = withAvaliation.length;
+        const totalAvaliation = allAvaliation.length ?? 0;
 
         let totalAvaliationEase = 0;
         let totalAvaliationTime = 0;
         let totalAvaliationSpace = 0;
         let totalAvaliationHygiene = 0;
 
-        withAvaliation.forEach((item)=>{
+        allAvaliation.forEach(item => {
             totalAvaliationEase += item.ease;
             totalAvaliationTime += item.time;
             totalAvaliationSpace += item.space;
-            totalAvaliationHygiene += item.hygiene
+            totalAvaliationHygiene += item.hygiene;
         });
 
-        const avaliationEase = (totalAvaliationEase/qtdAvaliation); 
-        const avaliationTime = (totalAvaliationTime/qtdAvaliation);
-        const avaliationSpace = (totalAvaliationSpace/qtdAvaliation)
-        const avaliationHygiene = (totalAvaliationHygiene/qtdAvaliation)
-        // ------------------------------------------------- avaliation
+        const averageAvaliationEase = (totalAvaliationEase / totalAvaliation || 0).toFixed(2);
+        const averageAvaliationTime = (totalAvaliationTime / totalAvaliation || 0).toFixed(2);
+        const averageAvaliationSpace = (totalAvaliationSpace / totalAvaliation || 0).toFixed(2);
+        const averageAvaliationHygiene = (totalAvaliationHygiene / totalAvaliation || 0).toFixed(2);
 
+        // Top 3 apartamentos com mais reservas (sem filtro de data)
         async function getTop3ApartmentsWithMostReservations() {
-                const topApartments = await prismaClient.apartment.findMany({
-                    where:{
-                        Reservations:{
-                            every:{
-                                createDate:{
-                                    gte: period
-                                }
-                            }
+            const topApartments = await prismaClient.apartment.findMany({
+                select: {
+                    id: true,
+                    numberApt: true,
+                    tower: {
+                        select: {
+                            numberTower: true
                         }
                     },
-                    select: {
-                        id: true,
-                        numberApt: true,
-                        tower: {
-                            select: {
-                            numberTower: true,
-                            },
-                        },
-                        _count: {
-                            select: {
-                            Reservations: true,
-                            },
-                        },
-                    },
-                    orderBy: {
-                        Reservations: {
-                            _count: 'desc',
-                        },
-                    },
-                    take: 3,
-                });
+                    _count: {
+                        select: {
+                            Reservations: true
+                        }
+                    }
+                },
+                orderBy: {
+                    Reservations: {
+                        _count: 'desc'
+                    }
+                },
+                take: 3
+            });
 
             const totalReservations = topApartments.reduce((acc, apartment) => acc + apartment._count.Reservations, 0);
 
-            const apartmentsWithPercentage = topApartments.map(apartment => {
-                const percentage = (apartment._count.Reservations / totalReservations) * 100;
-                    return {
-                    ...apartment,
-                    percentage: percentage.toFixed(0),
-                    };
-            });
-            
-            return apartmentsWithPercentage;
+            return topApartments.map(apartment => ({
+                ...apartment,
+                percentage: ((apartment._count.Reservations / totalReservations) * 100 || 0).toFixed(2)
+            }));
         }
 
         const topApartments = await getTop3ApartmentsWithMostReservations();
 
-        const rawData = topApartments 
-        ? topApartments.map(item => ({
-            name: item._count.Reservations > 0 ? `Torre ${item.tower.numberTower} - Apartamento ${item.numberApt}`: '',
+        const rawData = topApartments.map(item => ({
+            name: item._count.Reservations > 0 ? `Torre ${item.tower.numberTower} - Apartamento ${item.numberApt}` : '',
             reservas: item._count.Reservations
-        })) 
-        : [];
-        
-        const withMoreReservation = rawData.sort((a, b) => b.reservas - a.reservas); // moradores com mais reservas
-        // ----------------------------------------------------------------------------
+        }));
 
-        const avaliation = {
-                data:[
-                { name: 'Limpeza', media: avaliationHygiene },
-                { name: 'Espaço', media: avaliationSpace },
-                { name: 'Rapidez', media: avaliationTime },
-                { name: 'Facilidade', media: avaliationEase },
+        const withMoreReservations = rawData.sort((a, b) => b.reservas - a.reservas);
+
+        // Resultados finais
+        return {
+            TotalCollection: (totalCollectionCleaningService + totalCollectionTaxed + totalCollectionReservations).toFixed(2) ?? '0.00',
+            Users: totalUsers ?? 0,
+            Adms: totalAdmins ?? 0,
+            Apartaments: totalApartments ?? 0,
+            Towers: totalTowers ?? 0,
+            TotalCollectionDetails: [
+                { category: 'Reservas', value: totalCollectionReservations },
+                { category: 'Cancelamentos', value: totalCollectionTaxed },
+                { category: 'Limpezas', value: totalCollectionCleaningService }
             ],
-            qtd:qtdAvaliation
-        }
-        // obter avaliação
-        // ----------------------------------------------------------------------------
-
-
-        const totalCollection = (totalCollectionCleaningService + totalCollectionTaxed + totalCollectionReservartion);
-        const totalCollectionDetails = [
-            { category: 'Reservas', value:  totalCollectionReservartion},
-            { category: 'Cancelamentos', value: totalCollectionTaxed}, 
-            { category: 'Limpezas', value: totalCollectionCleaningService } 
-      ] //detalhes de valores arrecadados para grafico 1
-
-        const reservationMadeDetails = [
-            { name: 'Finalizadas', value: allReservationFinished },
-            { name: 'Aprovadas', value: allReservationProgress },
-            { name: 'Em Análise', value: reservationUnderAnalysisQtd},
-            { name: 'Canceladas', value: allCanceled }
-        ]; // detalhes sobre os numeros de cada reservas
-
-        const limit = 30
-        const  occupancyRate = [
-            { name: 'Ocupado', value: averageGuestsPerReservation ? averageGuestsPerReservation : 0, limite: limit },
-            {name: 'Disponível', value: averageGuestsPerReservation  ? limit -  averageGuestsPerReservation : 0 }
-        ]; // taxa de ocupação 
-
-        const payers = [
-            { category: 'Moradores', Adimplentes:  allCompliant, Inadimplentes: allDefaulter },
-        ]; // adimplentes x inadimplentes
-
-
-        return (
-            {
-                TotalCollection:totalCollection, 
-                Users:allUser,
-                Adms:allAdm,
-                Apartaments:allApts,
-                Towers:allTowers,
-                TotalCollectionDetails:totalCollectionDetails,
-                AllReservationMade:allReservationMadeInSystem,
-                ReservationMadeDetails: reservationMadeDetails,
-                OccupancyRate:occupancyRate,
-                Payers:payers,
-                Avaliation:avaliation,
-                WithMoreReservation:withMoreReservation,
-            }
-        )
+            AllReservationMade: totalReservationsMade ?? 0,
+            ReservationMadeDetails: [
+                { name: 'Finalizadas', value: totalReservationsFinished ?? 0 },
+                { name: 'Aprovadas', value: totalReservationsInProgress ?? 0 },
+                { name: 'Em Análise', value: totalReservationsUnderAnalysis ?? 0 },
+                { name: 'Canceladas', value: totalCanceledReservations ?? 0 }
+            ],
+            OccupancyRate: [
+                { name: 'Ocupado', value: parseFloat(averageGuestsPerReservation) ?? 0, limite: 30 },
+                { name: 'Disponível', value: 30 - parseFloat(averageGuestsPerReservation) }
+            ],
+            Payers: [
+                { category: 'Moradores', Adimplentes: totalCompliantApartments ?? 0, Inadimplentes: totalDefaulterApartments ?? 0 }
+            ],
+            Avaliation: {
+                data: [
+                    { name: 'Limpeza', media: averageAvaliationHygiene ?? '0.00' },
+                    { name: 'Espaço', media: averageAvaliationSpace ?? '0.00' },
+                    { name: 'Rapidez', media: averageAvaliationTime ?? '0.00' },
+                    { name: 'Facilidade', media: averageAvaliationEase ?? '0.00' }
+                ],
+                qtd: totalAvaliation ?? 0
+            },
+            WithMoreReservation: withMoreReservations
+        };
     }
 }
 
-export {ViewDashboardServices}
+export { ViewDashboardServices };

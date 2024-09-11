@@ -41,13 +41,6 @@ class DeleteAccountUserServices{
                 }
             })
         };
-
-        
-        const updateTokenStatus = await prismaClient.token.deleteMany({
-            where:{
-                user_id:id
-            }
-        });
         
         const deleteAccount = await prismaClient.user.delete({
             where:{

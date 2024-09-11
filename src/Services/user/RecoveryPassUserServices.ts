@@ -1,6 +1,7 @@
 import { hash, compare } from "bcryptjs";
 import prismaClient from "../../prisma";
 import { FormatEmail } from "../../utils/FormatEmail";
+import { randomUUID } from "crypto";
 
 interface recoveryProps {
   pass: string;
@@ -56,22 +57,19 @@ class RecoveryPassUserServices {
 
     const dateChangePass = new Date();
     dateChangePass.setDate(dateChangePass.getDate()+30);
-    
+
+
+    const uuid = randomUUID();
+
     const updatePass = await prismaClient.user.update({
       where:{
         id:user.id
       },data:{
         pass:hashPass,
-        dateChangePass:dateChangePass
+        dateChangePass:dateChangePass,
+        sessionToken: uuid,
       }
     })
-
-  const updateTokenStatus = await prismaClient.token.deleteMany({
-      where:{
-          user_id:user.id
-      }
-  });
-
 
     return ({
       ok:true,

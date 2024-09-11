@@ -27,18 +27,7 @@ class DeleteAccountServices{
         if (!isMyPass){
             throw new Error('Senha incorreta.');
         }
-        const allTokens = await prismaClient.token.findMany({
-            where: {
-                adm_id: id
-            }
-        });
-
-        const updateTokenStatus = await prismaClient.token.deleteMany({
-            where:{
-                adm_id:id
-            }
-        });
-
+        
         const deleteAdm = await prismaClient.adm.delete({
             where:{
                 id:id

@@ -44,26 +44,21 @@ class AuthAdmServices{
             }
         )// pegando dados para criar o token de autenticação 
 
-        const hashToken = await hash(token, 8);
+            
 
-        const setToken = await prismaClient.token.create({
-            data:{
-                adm_id:adm.id,
-                id:hashToken,
-            }
-        });
-
+        const admData = {
+            email:adm.email,
+            name:adm.name,
+            lastname:adm.lastname,
+            id:adm.id,
+            sessionToken:adm.sessionToken,
+            phone_number:adm.phone_number
+        }
 
         return ({
-            email:adm.email,
-            nome:adm.name,
-            sobrenome :adm.lastname,
-            id:adm.id,
-            token:token,
-            phone_number:adm.phone_number
+            data:admData,
+            token:token
         })
-
-
     }
 
 }

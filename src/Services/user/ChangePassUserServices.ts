@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import prismaClient from "../../prisma";
 import { compare, hash } from "bcryptjs";
 
@@ -47,20 +48,20 @@ class ChangePassUserServices{
         const dateChangePass = new Date();
         dateChangePass.setDate(dateChangePass.getDate()+30);
 
+
+        const uuid = randomUUID();
+
         const newPassword = await prismaClient.user.update({
             where:{
                 id:id
             },data:{
                 pass:passHash,
-                dateChangePass:dateChangePass
+                dateChangePass:dateChangePass,
+                sessionToken: uuid,
             }
         });
-
-        const updateTokenStatus = await prismaClient.token.deleteMany({
-            where:{
-                user_id:id
-            }
-        });
+        
+        return {ok:true}
         
     }
         

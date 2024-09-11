@@ -59,8 +59,8 @@ import { ListAllTaxedAgendamentoController } from "./Controllers/reservationAdm/
 import { ListGuestController } from "./Controllers/reservationAdm/ListGuestController";
 import { DeleteReservationAdmController } from "./Controllers/reservationAdm/DeleteReservationAdmController";
 //----------------------------------------------------------------------------------//
-import { AdmMiddlewares } from "./Middlewares/AdmMiddlewares";
-import { UserMiddlewares } from "./Middlewares/UserMiddlewares";
+import AdmMiddlewares from "./Middlewares/AdmMiddlewares";
+import UserMiddlewares from "./Middlewares/UserMiddlewares";
 
 
 const router = Router();
