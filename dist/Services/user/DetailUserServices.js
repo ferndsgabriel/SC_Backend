@@ -31,6 +31,7 @@ class DetailUserServices {
                     photo: true,
                     phone_number: true,
                     apartment_id: true,
+                    sessionToken: true,
                     apartment: {
                         select: {
                             numberApt: true,

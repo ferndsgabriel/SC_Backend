@@ -18,6 +18,7 @@ const prisma_1 = __importDefault(require("../../prisma"));
 const FormatPhone_1 = require("../../utils/FormatPhone");
 const FormatEmail_1 = require("../../utils/FormatEmail");
 const Capitalize_1 = require("../../utils/Capitalize");
+const crypto_1 = require("crypto");
 class CreateAdmServices {
     execute({ email, pass, cod, name, lastname, phone_number }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -57,13 +58,15 @@ class CreateAdmServices {
                 throw new Error('Código de administrador incorreto.');
             }
             const admHash = yield (0, bcryptjs_1.hash)(pass, 8);
+            const uuid = (0, crypto_1.randomUUID)();
             const adm = yield prisma_1.default.adm.create({
                 data: {
                     email: (0, FormatEmail_1.FormatEmail)(email),
                     pass: admHash,
                     name: (0, Capitalize_1.Capitalize)(name),
                     lastname: (0, Capitalize_1.Capitalize)(lastname),
-                    phone_number: (0, FormatPhone_1.FormatPhone)(phone_number)
+                    phone_number: (0, FormatPhone_1.FormatPhone)(phone_number),
+                    sessionToken: uuid,
                 }, select: {
                     email: true,
                     id: true,

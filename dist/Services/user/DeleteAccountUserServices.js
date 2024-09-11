@@ -46,11 +46,6 @@ class DeleteAccountUserServices {
                 });
             }
             ;
-            const updateTokenStatus = yield prisma_1.default.token.deleteMany({
-                where: {
-                    user_id: id
-                }
-            });
             const deleteAccount = yield prisma_1.default.user.delete({
                 where: {
                     id: id

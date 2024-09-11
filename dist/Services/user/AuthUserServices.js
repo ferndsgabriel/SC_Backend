@@ -27,6 +27,7 @@ class AuthUserServices {
                 where: {
                     email: (0, FormatEmail_1.FormatEmail)(email),
                 }, select: {
+                    sessionToken: true,
                     id: true,
                     name: true,
                     lastname: true,
@@ -71,13 +72,8 @@ class AuthUserServices {
                 expiresIn: '30d',
             });
             const hashToken = yield (0, bcryptjs_1.hash)(token, 8);
-            const setToken = yield prisma_1.default.token.create({
-                data: {
-                    user_id: user.id,
-                    id: hashToken,
-                },
-            });
             const userData = {
+                sessionToken: user.sessionToken,
                 id: user.id,
                 name: user.name,
                 lastname: user.lastname,
@@ -85,7 +81,7 @@ class AuthUserServices {
                 photo: user.photo,
                 phone_number: user.phone_number,
                 apartment_id: user.apartment_id,
-                apartment: user.apartment
+                apartment: user.apartment,
             };
             return {
                 userData: userData,

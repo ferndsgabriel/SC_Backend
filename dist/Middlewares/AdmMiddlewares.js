@@ -8,43 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdmMiddlewares = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
-const bcryptjs_1 = require("bcryptjs");
-const prisma_1 = __importDefault(require("../prisma"));
 function AdmMiddlewares(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const authToken = req.headers.authorization;
-        if (!authToken) {
-            return res.status(401).end();
-        }
-        const [item, token] = authToken.split(" ");
+        const tokenDeAuth = req.headers.authorization; // verifico se existe um token no header da aplicação
+        if (!tokenDeAuth) {
+            return res.status(401).send('Rota não autorizada').end();
+        } // se n existe a rota n pode ser acessada
+        const [prefix, token] = tokenDeAuth.split(' '); // como o token vem com o prefiro e o token separados por espaços, do um split
         try {
-            const { sub } = (0, jsonwebtoken_1.verify)(token, process.env.AJWT_SECRET);
-            const tokensInDatabase = yield prisma_1.default.token.findMany({
-                where: {
-                    adm_id: sub,
-                },
-            });
-            if (!tokensInDatabase || tokensInDatabase.length === 0) {
-                return res.status(401).end();
-            }
-            const validTokenExists = tokensInDatabase.some((dbToken) => __awaiter(this, void 0, void 0, function* () {
-                return yield (0, bcryptjs_1.compare)(token, dbToken.id);
-            }));
-            if (!validTokenExists) {
-                return res.status(401).end();
-            }
-            req.adm_id = sub;
-            return next();
+            const { sub } = (0, jsonwebtoken_1.verify)(token, process.env.AJWT_SECRET); // tento pegar o sub dentro do token
+            //OBS: esse sub tem nada haver com o do google, ele é um dos 3 elementos que existe dentro do token
+            // 1 payload/ 2 obj hash e  3 sub, o sub é aonde envio o id do adm e agr estou usando para pega-lo
+            if (!sub) {
+                return res.status(401).send('Rota não autorizada').end();
+            } // se n tiver sub n deixo seguir
+            req.adm_id = sub; // se tiver crio o uma tipagem do express passando o id que mandei no sub
+            // criar essa tipagem de adm_id para o request, me permite executar qualquer CRUD no banco de dados
+            // que envolva o id desse adm sem precisar que fique digitando o id, apenas extraindo direto do token de authenticação
+            return next(); // deixo seguir
         }
         catch (err) {
-            return res.status(401).end();
+            return res.status(401).send('Rota não autorizada').end(); // caso de erro eu n deixo seguir
         }
     });
 }
-exports.AdmMiddlewares = AdmMiddlewares;
+exports.default = AdmMiddlewares;

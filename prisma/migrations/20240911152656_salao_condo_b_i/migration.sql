@@ -6,7 +6,7 @@ CREATE TABLE "Adm" (
     "name" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
     "phone_number" TEXT NOT NULL,
-    "sessionToken" TEXT,
+    "sessionToken" TEXT NOT NULL,
     "codRecovery" TEXT,
     "codDate" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "countCod" INTEGER NOT NULL DEFAULT 0,
@@ -45,7 +45,7 @@ CREATE TABLE "User" (
     "lastname" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "pass" TEXT NOT NULL,
-    "sessionToken" TEXT,
+    "sessionToken" TEXT NOT NULL,
     "photo" TEXT,
     "accountStatus" BOOLEAN,
     "phone_number" TEXT NOT NULL,
@@ -74,6 +74,7 @@ CREATE TABLE "Reservation" (
     "phone_number" TEXT NOT NULL,
     "apartment_id" TEXT NOT NULL,
     "createDate" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "acceptedDate" TIMESTAMP(3),
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
 );

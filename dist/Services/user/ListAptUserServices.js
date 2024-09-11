@@ -22,15 +22,28 @@ class ListAptUserServices {
                     id: true,
                     numberApt: true,
                     tower_id: true,
-                    user: true,
+                    user: {
+                        select: {
+                            photo: true,
+                            name: true,
+                        },
+                    },
                     tower: {
                         select: {
-                            numberTower: true
-                        }
-                    }
-                }, orderBy: {
-                    numberApt: 'asc'
-                }
+                            numberTower: true,
+                        },
+                    },
+                },
+                orderBy: [
+                    {
+                        tower: {
+                            numberTower: 'desc',
+                        },
+                    },
+                    {
+                        numberApt: 'asc',
+                    },
+                ],
             });
             return apt;
         });

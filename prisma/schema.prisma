@@ -15,7 +15,7 @@ model Adm {
   name                  String
   lastname              String
   phone_number          String          @unique
-  sessionToken          String?          
+  sessionToken          String         
   codRecovery           String? 
   codDate               DateTime?       @default(now())
   countCod              Int             @default(0)
@@ -51,7 +51,7 @@ model User {
   lastname              String
   email                 String          @unique
   pass                  String
-  sessionToken          String?      
+  sessionToken          String    
   photo                 String?         @unique      
   accountStatus         Boolean?    
   phone_number          String          @unique
@@ -81,6 +81,7 @@ model Reservation {
   apartment_id          String     
   avaliations           Avaliations[]
   createDate            DateTime?        @default(now())
+  acceptedDate          DateTime?
 }
 
 

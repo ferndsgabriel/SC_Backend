@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
 require('dotenv').config();
-const teste = process.env.FIREBASE_TYPE;
 const credentialFB = {
     "type": process.env.FIREBASE_TYPE,
     "project_id": process.env.FIREBASE_PROJECT_ID,

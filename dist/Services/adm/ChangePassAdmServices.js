@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChangePassAdmServices = void 0;
+const crypto_1 = require("crypto");
 const prisma_1 = __importDefault(require("../../prisma"));
 const bcryptjs_1 = require("bcryptjs");
 class ChangePassAdmServices {
@@ -46,19 +47,17 @@ class ChangePassAdmServices {
             const passHash = yield (0, bcryptjs_1.hash)(newPass, 8);
             const dateChangePass = new Date();
             dateChangePass.setDate(dateChangePass.getDate() + 30);
+            const uuid = (0, crypto_1.randomUUID)();
             const newPassword = yield prisma_1.default.adm.update({
                 where: {
                     id: id
                 }, data: {
                     pass: passHash,
-                    dateChangePass: dateChangePass
+                    dateChangePass: dateChangePass,
+                    sessionToken: uuid
                 }
             });
-            const updateTokenStatus = yield prisma_1.default.token.deleteMany({
-                where: {
-                    adm_id: id
-                }
-            });
+            return ({ ok: true });
         });
     }
 }

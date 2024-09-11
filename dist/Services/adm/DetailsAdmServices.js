@@ -25,10 +25,11 @@ class DetailsAdmServices {
                     id: id
                 }, select: {
                     email: true,
-                    id: true,
                     name: true,
                     lastname: true,
-                    phone_number: true
+                    id: true,
+                    sessionToken: true,
+                    phone_number: true,
                 }
             });
             return details;

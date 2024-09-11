@@ -51,7 +51,6 @@ function setupSocketServer(httpServer) {
     }
     function handleError(error) {
         console.log('Error:', error);
-        // Aqui você pode implementar uma lógica adicional de tratamento de erros, como notificação de erro.
     }
     function updateConversations(socket) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -88,9 +87,9 @@ function setupSocketServer(httpServer) {
                 const messages = yield getMessages(id);
                 socket.emit('oldMessages', messages);
             }
-        }));
-        socket.on('sendMessageUser', (data) => sendMessage(socket, new SendMessageUserServices_1.SendMessageUserServices(), data));
-        socket.on('sendMessageAdm', (data) => sendMessage(socket, new SendMessageAdmServices_1.SendMessageAdmServices(), data));
+        })); //aqui me conecto conecto como user e pego mensagens anteriores
+        socket.on('sendMessageUser', (data) => sendMessage(socket, new SendMessageUserServices_1.SendMessageUserServices(), data)); // envio mensagem com o user
+        socket.on('sendMessageAdm', (data) => sendMessage(socket, new SendMessageAdmServices_1.SendMessageAdmServices(), data)); // envio mensagem com o user
         socket.on('deliverMessageUser', ({ id }) => __awaiter(this, void 0, void 0, function* () {
             const gotANewMessageUserServices = new GotANewMessageUserServices_1.GotANewMessageUserServices();
             try {

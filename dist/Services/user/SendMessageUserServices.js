@@ -46,6 +46,19 @@ class SendMessageUserServices {
                     to: 'admin',
                     from: 'user',
                     date: date
+                },
+                select: {
+                    id: true,
+                    conversation_id: true,
+                    content: true,
+                    from: true,
+                    to: true,
+                    date: true,
+                    conversation: {
+                        select: {
+                            apartment_id: true
+                        }
+                    }
                 }
             });
             const onDay = new Date();

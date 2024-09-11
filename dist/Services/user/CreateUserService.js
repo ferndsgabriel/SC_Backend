@@ -19,6 +19,7 @@ const bcryptjs_1 = require("bcryptjs");
 const FormatPhone_1 = require("../../utils/FormatPhone");
 const Capitalize_1 = require("../../utils/Capitalize");
 const FormatEmail_1 = require("../../utils/FormatEmail");
+const crypto_1 = require("crypto");
 class CreateUserService {
     execute({ email, name, apartament_id, cpf, pass, lastname, phone_number, }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -70,6 +71,7 @@ class CreateUserService {
                 throw new Error("Este apartamento não existe.");
             }
             const hashPass = yield (0, bcryptjs_1.hash)(pass, 8);
+            const uuid = (0, crypto_1.randomUUID)();
             const user = yield prisma_1.default.user.create({
                 data: {
                     name: (0, Capitalize_1.Capitalize)(name),
@@ -80,6 +82,7 @@ class CreateUserService {
                     apartment_id: apartament_id,
                     phone_number: (0, FormatPhone_1.FormatPhone)(phone_number),
                     accountStatus: null,
+                    sessionToken: uuid
                 },
                 select: {
                     name: true,

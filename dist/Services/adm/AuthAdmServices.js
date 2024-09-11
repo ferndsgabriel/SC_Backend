@@ -42,20 +42,17 @@ class AuthAdmServices {
                 subject: adm.id,
                 expiresIn: "30d"
             }); // pegando dados para criar o token de autenticação 
-            const hashToken = yield (0, bcryptjs_1.hash)(token, 8);
-            const setToken = yield prisma_1.default.token.create({
-                data: {
-                    adm_id: adm.id,
-                    id: hashToken,
-                }
-            });
-            return ({
+            const admData = {
                 email: adm.email,
-                nome: adm.name,
-                sobrenome: adm.lastname,
+                name: adm.name,
+                lastname: adm.lastname,
                 id: adm.id,
-                token: token,
+                sessionToken: adm.sessionToken,
                 phone_number: adm.phone_number
+            };
+            return ({
+                data: admData,
+                token: token
             });
         });
     }

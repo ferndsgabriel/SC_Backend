@@ -16,6 +16,7 @@ exports.RecoveryPassAdmServices = void 0;
 const bcryptjs_1 = require("bcryptjs");
 const prisma_1 = __importDefault(require("../../prisma"));
 const FormatEmail_1 = require("../../utils/FormatEmail");
+const crypto_1 = require("crypto");
 class RecoveryPassAdmServices {
     execute({ pass, cod, email }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,17 +53,14 @@ class RecoveryPassAdmServices {
             const hashPass = yield (0, bcryptjs_1.hash)(pass, 8);
             const dateChangePass = new Date();
             dateChangePass.setDate(dateChangePass.getDate() + 30);
+            const uuid = (0, crypto_1.randomUUID)();
             const updatePass = yield prisma_1.default.adm.update({
                 where: {
                     id: adm.id
                 }, data: {
                     pass: hashPass,
-                    dateChangePass: dateChangePass
-                }
-            });
-            const updateTokenStatus = yield prisma_1.default.token.deleteMany({
-                where: {
-                    adm_id: adm.id
+                    dateChangePass: dateChangePass,
+                    sessionToken: uuid
                 }
             });
             return ({
