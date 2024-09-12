@@ -62,7 +62,6 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Reservation" (
     "id" TEXT NOT NULL,
-    "guest" TEXT,
     "reservationStatus" BOOLEAN,
     "cleaningService" BOOLEAN NOT NULL,
     "date" INTEGER NOT NULL,
@@ -77,6 +76,17 @@ CREATE TABLE "Reservation" (
     "acceptedDate" TIMESTAMP(3),
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Guest" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "rg" TEXT NOT NULL,
+    "attended" BOOLEAN NOT NULL DEFAULT false,
+    "reservation_id" TEXT NOT NULL,
+
+    CONSTRAINT "Guest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -166,6 +176,9 @@ ALTER TABLE "User" ADD CONSTRAINT "User_apartment_id_fkey" FOREIGN KEY ("apartme
 
 -- AddForeignKey
 ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_apartment_id_fkey" FOREIGN KEY ("apartment_id") REFERENCES "Apartment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Guest" ADD CONSTRAINT "Guest_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "Reservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "IsCanceled" ADD CONSTRAINT "IsCanceled_apartment_id_fkey" FOREIGN KEY ("apartment_id") REFERENCES "Apartment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

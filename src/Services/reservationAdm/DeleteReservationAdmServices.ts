@@ -12,6 +12,12 @@ class DeleteReservationAdmServices{
         if (! reservation_id){
             throw new Error ("Digite a reserva.");
         }
+
+        const deleteGuest = await prismaClient.guest.deleteMany({
+            where:{
+                reservation_id:reservation_id
+            }
+        })
         const reservationExist = await prismaClient.reservation.findFirst({
             where:{
                 id:reservation_id
@@ -27,6 +33,8 @@ class DeleteReservationAdmServices{
                 }
             }
         });
+
+
 
         if (!reservation_id){
             throw new Error ('Reserva não encontrada.');

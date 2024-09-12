@@ -148,6 +148,12 @@ class DeleteReservationUserServices {
       }
     }
 
+    const deleteGuest = await prismaClient.guest.deleteMany({
+      where:{
+        reservation_id:reservation_id
+      }
+    });
+
     const deleteReservation = await prismaClient.reservation.delete({
       where:{
         id:reservation_id

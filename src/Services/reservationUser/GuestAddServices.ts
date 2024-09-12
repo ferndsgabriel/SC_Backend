@@ -1,41 +1,41 @@
 import prismaClient from "../../prisma";
 
-interface GuestRequest{
+interface CreateGuestProps{
     reservation_id: string
-    guest: string;
-    user_id:string
+    Guest:{
+        name: string;
+        rg:string;
+    }[]
 }
 
-class GuestAddServices{
-    async execute({reservation_id, guest, user_id}:GuestRequest){
+class GuestAddServices {
+    async execute(createGuest: CreateGuestProps) {
 
-        if (!reservation_id || !guest || !user_id){
-            throw new Error ('Envie todos os dados');
+        if (!createGuest) {
+            throw new Error('Envie todos os dados');
         }
 
-        const userExist = await prismaClient.user.findFirst({
-            where:{
-                id:user_id
-            },select:{
-                apartment_id:true
+        for (const item of createGuest.Guest) {
+            try {
+                if (item.rg.length !== 5) {
+                    throw new Error('Digite apenas os 4 últimos dígitos do RG');
+                }
+                
+                const pushGuest = await prismaClient.guest.create({
+                    data:{
+                        name:item.name,
+                        rg:item.rg,
+                        reservation_id:createGuest.reservation_id
+                    }
+                })
+            } catch (error) {
+                console.error(error);
             }
-        });
-
-        if (!userExist){
-            throw new Error ('Usuário não encontrado :(');
         }
 
-        const addConvidados = await prismaClient.reservation.update({
-            where:{
-                id:reservation_id,
-                apartment_id:userExist.apartment_id
-            },data:{
-                guest:guest
-            }
-        })
-
-        return addConvidados;
+        return createGuest;
     }
 }
 
-export {GuestAddServices}
+export { GuestAddServices };
+    

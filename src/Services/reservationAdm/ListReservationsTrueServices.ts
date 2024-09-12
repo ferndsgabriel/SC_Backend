@@ -38,7 +38,7 @@ class ListReservationsTrueServices {
         name:true,
         email:true,
         phone_number:true,
-        guest:true,
+        GuestList:true,
         apartment:{
           select:{
             id:true,

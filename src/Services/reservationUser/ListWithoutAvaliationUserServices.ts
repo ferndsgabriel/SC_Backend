@@ -43,9 +43,9 @@ class ListWithoutAvaliationUserServices {
         start:true,
         finish:true,
         cleaningService:true,
-        guest:true,
         reservationStatus:true,
-        id:true
+        id:true,
+        GuestList:true
       },orderBy:{
         date:'asc'
       }

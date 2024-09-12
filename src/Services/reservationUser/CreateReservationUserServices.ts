@@ -112,6 +112,27 @@ class CreateReservationUserServices{
             throw new Error ("Uma reserva já foi confirmada nessa data");
         }
 
+        const startOfMonth = parseInt(`${yearInt}${monthInt.toString().padStart(2, '0')}01`);
+        const endOfMonth = parseInt(`${yearInt}${monthInt.toString().padStart(2, '0')}${new Date(yearInt, monthInt, 0).getDate().toString().padStart(2, '0')}`);
+
+        const reservationsInMonth = await prismaClient.reservation.count({
+            where: {
+                apartment_id: user.apartment.id,
+                date: {
+                    gte: startOfMonth, 
+                    lte: endOfMonth, 
+                }
+            }
+        });
+
+        if (reservationsInMonth >= 2) {
+            throw new Error("Você já tem duas reservas no mês.");
+        }
+
+        if (reservationsInMonth >= 2) {
+            throw new Error("Você já tem duas reservas confirmadas neste mês.");
+        }
+
         const itsMy = await prismaClient.reservation.findFirst({
             where:{
                 apartment_id:user.apartment.id,

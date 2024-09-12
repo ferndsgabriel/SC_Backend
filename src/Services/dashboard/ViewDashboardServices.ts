@@ -1,12 +1,16 @@
 import prismaClient from "../../prisma";
 import dateInInt from "../../utils/DateInInt";
 
-interface aptProps {
-    payment: boolean;
-}
 
 interface dashBoardProps {
     period: Date;
+}
+
+interface GuestListProps {
+    id: string;
+    name: string;
+    rg: string;
+    reservation_id: string;
 }
 
 class ViewDashboardServices {
@@ -56,11 +60,12 @@ class ViewDashboardServices {
                 finish: true,
                 cleaningService: true,
                 createDate: true,
-                guest: true,
                 date: true,
-                reservationStatus: true
+                reservationStatus: true,
+                GuestList: true
             }
         });
+        
         const totalReservations = allReservationsInSystem.length ?? 0;
 
         // Consulta para reservas canceladas (aplicando filtro de data)
@@ -87,22 +92,23 @@ class ViewDashboardServices {
         const totalReservationsFinished = reservationsFinished.length ?? 0;
         const totalReservationsInProgress = reservationsInProgress.length ?? 0;
 
-        // Total de hóspedes (aplicando filtro de data)
-        const guestsList: string[] = [];
         let totalGuests = 0;
-
+        const flatGuestsList: GuestListProps[] = [];
+        let reservationsWithGuests = 0;
+        
         allReservationsInSystem.forEach(item => {
-            if (item.guest) {
-                guestsList.push(item.guest);
+            if (item.GuestList && item.GuestList.length > 0) {
+                flatGuestsList.push(...item.GuestList);
+                reservationsWithGuests++; 
             }
         });
-
-        guestsList.forEach(item => {
-            const names = item.split(',').filter(name => name.trim() !== '');
-            totalGuests += names.length;
-        });
-
-        const averageGuestsPerReservation = (totalGuests / guestsList.length || 0).toFixed(2);
+        
+        totalGuests = flatGuestsList.length;
+        
+        const averageGuestsPerReservation = reservationsWithGuests > 0 
+        ? (totalGuests / reservationsWithGuests).toFixed(2)
+        : '0';
+    
 
         // Cancelamentos com taxa (aplicando filtro de data)
         const taxedReservations = allCanceledReservationsInSystem.filter(item => item.isTaxed === true);

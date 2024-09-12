@@ -27,7 +27,7 @@ model Tower{
   id                    String         @id @default(uuid())
   numberTower           String         
   apartment             Apartment[]
-  createDate             DateTime?        @default(now())
+  createDate            DateTime?        @default(now())
 }
 
 model Apartment {
@@ -67,7 +67,7 @@ model User {
 
 model Reservation {
   id                    String          @id @default(uuid())
-  guest                 String?
+  GuestList             Guest[]
   reservationStatus     Boolean?
   cleaningService       Boolean     
   date                  Int
@@ -84,6 +84,15 @@ model Reservation {
   acceptedDate          DateTime?
 }
 
+model Guest{
+  id                    String          @id @default(uuid())
+  name                  String
+  rg                    String
+  attended              Boolean         @default(false)
+  reservation           Reservation     @relation(fields: [reservation_id], references: [id])
+  reservation_id        String
+
+}
 
 model IsCanceled {
   id                     String          @id @default(uuid())
