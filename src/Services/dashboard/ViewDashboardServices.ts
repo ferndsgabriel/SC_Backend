@@ -62,7 +62,16 @@ class ViewDashboardServices {
                 createDate: true,
                 date: true,
                 reservationStatus: true,
-                GuestList: true
+                acceptedDate:true,
+                GuestList:{
+                    select: {
+                        name: true,
+                        rg: true,
+                        reservation_id: true,
+                        id: true,
+                        attended:true
+                    }
+                }   
             }
         });
         
@@ -92,6 +101,7 @@ class ViewDashboardServices {
         const totalReservationsFinished = reservationsFinished.length ?? 0;
         const totalReservationsInProgress = reservationsInProgress.length ?? 0;
 
+        let totalGuestsAttended = 0;
         let totalGuests = 0;
         const flatGuestsList: GuestListProps[] = [];
         let reservationsWithGuests = 0;
@@ -99,11 +109,14 @@ class ViewDashboardServices {
         allReservationsInSystem.forEach(item => {
             if (item.GuestList && item.GuestList.length > 0) {
                 flatGuestsList.push(...item.GuestList);
-                reservationsWithGuests++; 
+                reservationsWithGuests++;
+        
+                totalGuestsAttended += item.GuestList.filter(guest => guest.attended === true).length;
             }
         });
         
         totalGuests = flatGuestsList.length;
+        
         
         const averageGuestsPerReservation = reservationsWithGuests > 0 
         ? (totalGuests / reservationsWithGuests).toFixed(2)
@@ -201,6 +214,76 @@ class ViewDashboardServices {
 
         const withMoreReservations = rawData.sort((a, b) => b.reservas - a.reservas);
 
+        // Reservas por mes
+        const monthsInPortuguese = [
+            'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+        ];
+        const formatReservationsByMonth = (reservationsData: { date: number, reservations: number }[]) => {
+            const year = new Date().getFullYear();
+            const currentYear = year;
+            // Criar um array para armazenar o total de reservas de cada mês (inicialmente 0)
+            const reservationsPerMonth = new Array(12).fill(0);
+            // Filtrar e contar as reservas para cada mês
+            reservationsData.forEach(item => {
+                const year = Math.floor(item.date / 10000); 
+                const month = Math.floor((item.date % 10000) / 100) - 1; 
+
+            if (year === currentYear) {
+                    reservationsPerMonth[month] += item.reservations;
+                }
+            });
+            // Formatar o resultado com os nomes dos meses em português
+            const result = monthsInPortuguese.map((month, index) => {
+                return {
+                    month,
+                    reservations: reservationsPerMonth[index] || 0 // Se não houver reservas retorna 0
+                };
+            });
+            return result;
+        };
+
+        const reservationsPerMonth = formatReservationsByMonth(
+            allReservationsInSystem.map(item => ({
+                date: item.date,
+                reservations: 1 // Contar cada reserva individualmente
+            }))
+        );
+
+        function calculateAverageApprovalTime(createDates:Date[], approvalDates:Date[]) {
+            function toMinutes(timestamp:any) {
+                const date = new Date(timestamp);
+                return date.getTime() / 60000; 
+            }
+            let totalApprovalTime = 0;
+            for (let i = 0; i < createDates.length; i++) {
+                const createTime = toMinutes(createDates[i]);
+                const approvalTime = toMinutes(approvalDates[i]);
+                totalApprovalTime += (approvalTime - createTime);
+            }
+        
+            const averageApprovalTime = totalApprovalTime / createDates.length;
+        
+            return averageApprovalTime;
+        }
+
+        function convertMinutesToHoursAndMinutes(minutes:number) {
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = Math.round(minutes % 60); 
+            return `${hours}h:${remainingMinutes}min`;
+        }
+        const listAllRequestDate = <Date[]>[]
+        const listAllApprovalDate = <Date[]>[]
+
+        allReservationsInSystem.forEach((item)=>{
+            if (item.acceptedDate !== null && item.createDate !== null){
+                listAllApprovalDate.push(item.acceptedDate);
+                listAllRequestDate.push(item.createDate);
+            }
+        });
+        const timeApproveReservationMinutes = calculateAverageApprovalTime(listAllRequestDate, listAllApprovalDate)
+        const timeApproveReservation = convertMinutesToHoursAndMinutes(timeApproveReservationMinutes);
+
         // Resultados finais
         return {
             TotalCollection: (totalCollectionCleaningService + totalCollectionTaxed + totalCollectionReservations).toFixed(2) ?? '0.00',
@@ -220,12 +303,10 @@ class ViewDashboardServices {
                 { name: 'Em Análise', value: totalReservationsUnderAnalysis ?? 0 },
                 { name: 'Canceladas', value: totalCanceledReservations ?? 0 }
             ],
-            OccupancyRate: [
-                { name: 'Ocupado', value: parseFloat(averageGuestsPerReservation) ?? 0, limite: 30 },
-                { name: 'Disponível', value: 30 - parseFloat(averageGuestsPerReservation) }
-            ],
+            OccupancyRate: { occupied: parseFloat(averageGuestsPerReservation) ?? 0, limit: 30, attended: totalGuestsAttended ?? 0 },
             Payers: [
-                { category: 'Moradores', Adimplentes: totalCompliantApartments ?? 0, Inadimplentes: totalDefaulterApartments ?? 0 }
+                { category: 'Adimplentes', value: totalCompliantApartments ?? 0}, 
+                {category: 'Inadimplentes', value:totalDefaulterApartments ?? 0 }
             ],
             Avaliation: {
                 data: [
@@ -236,7 +317,9 @@ class ViewDashboardServices {
                 ],
                 qtd: totalAvaliation ?? 0
             },
-            WithMoreReservation: withMoreReservations
+            WithMoreReservation: withMoreReservations,
+            ReservationsPerMonth:reservationsPerMonth,
+            AverageTimeToAccept:timeApproveReservation
         };
     }
 }
