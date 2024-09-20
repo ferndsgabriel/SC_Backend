@@ -9,16 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GuestAddController = void 0;
-const GuestAddServices_1 = require("../../Services/reservationUser/GuestAddServices");
-class GuestAddController {
-    handle(req, res) {
+exports.AuthConciergeServices = void 0;
+const bcryptjs_1 = require("bcryptjs");
+const jsonwebtoken_1 = require("jsonwebtoken");
+class AuthConciergeServices {
+    execute(cod) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { createGuest } = req.body;
-            const guestAddServices = new GuestAddServices_1.GuestAddServices();
-            const addConvidados = yield guestAddServices.execute(createGuest);
-            return res.json(addConvidados);
+            if (!cod) {
+                throw new Error('Código de acesso não enviado.');
+            }
+            const codCompare = process.env.CONCIERGE_PASS;
+            const itsEqual = yield (0, bcryptjs_1.compare)(cod, codCompare);
+            const token = (0, jsonwebtoken_1.sign)({}, process.env.AJWT_SECRET, {
+                subject: cod,
+                expiresIn: '30d',
+            });
+            if (!itsEqual) {
+                throw new Error('Código de acesso inválido.');
+            }
+            else {
+                return token;
+            }
         });
     }
 }
-exports.GuestAddController = GuestAddController;
+exports.AuthConciergeServices = AuthConciergeServices;

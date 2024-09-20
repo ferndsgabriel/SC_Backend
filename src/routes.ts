@@ -58,10 +58,17 @@ import { SetNewReservationController } from "./Controllers/reservationAdm/SetNew
 import { ListReservationsTrueController } from "./Controllers/reservationAdm/ListReservationsTrueController";
 import { ListAllTaxedAgendamentoController } from "./Controllers/reservationAdm/ListAllTaxedAgendamentoController";
 import { DeleteReservationAdmController } from "./Controllers/reservationAdm/DeleteReservationAdmController";
-//----------------------------------------------------------------------------------//
+// concierge import ---------------------------------------------------------------
+import { AuthConciergeController } from "./Controllers/concierge/AuthConciergeController";
+import { FilterOldReservationsController } from "./Controllers/concierge/FilterOldReservationsController";
+import { FilterFutureReservationsController } from "./Controllers/concierge/FilterFutureReservationsController";
+import { FilterTodayReservationsController } from "./Controllers/concierge/FilterTodayReservationsController";
+import { FilterByIdReservationController } from "./Controllers/concierge/FilterByIdReservationController";
+import { SetPresenceGuestController } from "./Controllers/concierge/SetPresenceGuestController";
+//---------------------------------middlewares----------------------------------------//
 import AdmMiddlewares from "./Middlewares/AdmMiddlewares";
 import UserMiddlewares from "./Middlewares/UserMiddlewares";
-
+import Conciergeiddlewares from "./Middlewares/ConciergeMiddleware";
 
 const router = Router();
 
@@ -116,5 +123,12 @@ router.put("/adm/setreservations", AdmMiddlewares, new SetNewReservationControll
 router.get("/adm/actreservations", AdmMiddlewares, new ListReservationsTrueController().handle);
 router.get("/adm/taxed", AdmMiddlewares, new ListAllTaxedAgendamentoController().handle);
 router.delete("/adm/reservation", AdmMiddlewares, new DeleteReservationAdmController().handle);
+// routes concierge imports
+router.post("/concierge", new AuthConciergeController().handle);
+router.get("/concierge/oldreservations", Conciergeiddlewares, new FilterOldReservationsController().handle);
+router.get("/concierge/futurereservations", Conciergeiddlewares, new FilterFutureReservationsController().handle);
+router.get("/concierge/todayreservations", Conciergeiddlewares, new FilterTodayReservationsController().handle);
+router.get('/concierge/reservation', Conciergeiddlewares, new FilterByIdReservationController().handle);
+router.put('/concierge/presence', Conciergeiddlewares, new SetPresenceGuestController().handle);
 
 export {router}

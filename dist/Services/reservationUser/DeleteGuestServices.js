@@ -12,33 +12,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GuestAddServices = void 0;
+exports.DeleteGuestServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
-class GuestAddServices {
-    execute(createGuest) {
+class DeleteGuestServices {
+    execute(deleteGuest) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!createGuest) {
+            if (!deleteGuest || !Array.isArray(deleteGuest.Guest) || deleteGuest.Guest.length === 0) {
                 throw new Error('Envie todos os dados');
             }
-            for (const item of createGuest.Guest) {
+            for (const item of deleteGuest.Guest) {
                 try {
-                    if (item.rg.length !== 5) {
-                        throw new Error('Digite apenas os 4 últimos dígitos do RG');
+                    const existingGuest = yield prisma_1.default.guest.findUnique({
+                        where: { id: item }
+                    });
+                    if (!existingGuest) {
+                        continue;
                     }
-                    const pushGuest = yield prisma_1.default.guest.create({
-                        data: {
-                            name: item.name,
-                            rg: item.rg,
-                            reservation_id: createGuest.reservation_id
-                        }
+                    yield prisma_1.default.guest.delete({
+                        where: { id: item }
                     });
                 }
                 catch (error) {
-                    console.error(error);
+                    if (error.code === 'P2025') {
+                        console.warn('error');
+                    }
+                    else {
+                        console.error(error);
+                    }
                 }
             }
-            return createGuest;
+            return { ok: true };
         });
     }
 }
-exports.GuestAddServices = GuestAddServices;
+exports.DeleteGuestServices = DeleteGuestServices;

@@ -145,6 +145,11 @@ class DeleteReservationUserServices {
                     (0, SendEmail_1.SendEmail)(thereAwaitList[x].user.email, awaitListMensagem);
                 }
             }
+            const deleteGuest = yield prisma_1.default.guest.deleteMany({
+                where: {
+                    reservation_id: reservation_id
+                }
+            });
             const deleteReservation = yield prisma_1.default.reservation.delete({
                 where: {
                     id: reservation_id

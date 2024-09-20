@@ -9,16 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GuestAddController = void 0;
-const GuestAddServices_1 = require("../../Services/reservationUser/GuestAddServices");
-class GuestAddController {
+exports.FilterTodayReservationsController = void 0;
+const FilterTodayReservationsServices_1 = require("../../Services/concierge/FilterTodayReservationsServices");
+class FilterTodayReservationsController {
     handle(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { createGuest } = req.body;
-            const guestAddServices = new GuestAddServices_1.GuestAddServices();
-            const addConvidados = yield guestAddServices.execute(createGuest);
-            return res.json(addConvidados);
+            const filterReservationsServices = new FilterTodayReservationsServices_1.FilterTodayReservationsServices();
+            const response = yield filterReservationsServices.execute();
+            return res.json(response);
         });
     }
 }
-exports.GuestAddController = GuestAddController;
+exports.FilterTodayReservationsController = FilterTodayReservationsController;

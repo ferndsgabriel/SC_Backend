@@ -12,33 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GuestAddServices = void 0;
+exports.SetPresenceGuestServices = void 0;
 const prisma_1 = __importDefault(require("../../prisma"));
-class GuestAddServices {
-    execute(createGuest) {
+class SetPresenceGuestServices {
+    execute({ id, value }) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!createGuest) {
+            if (!id || value === undefined) {
                 throw new Error('Envie todos os dados');
             }
-            for (const item of createGuest.Guest) {
-                try {
-                    if (item.rg.length !== 5) {
-                        throw new Error('Digite apenas os 4 últimos dígitos do RG');
-                    }
-                    const pushGuest = yield prisma_1.default.guest.create({
-                        data: {
-                            name: item.name,
-                            rg: item.rg,
-                            reservation_id: createGuest.reservation_id
-                        }
-                    });
+            const updateGuest = yield prisma_1.default.guest.update({
+                where: {
+                    id
+                },
+                data: {
+                    attended: value
                 }
-                catch (error) {
-                    console.error(error);
-                }
-            }
-            return createGuest;
+            });
+            return updateGuest;
         });
     }
 }
-exports.GuestAddServices = GuestAddServices;
+exports.SetPresenceGuestServices = SetPresenceGuestServices;

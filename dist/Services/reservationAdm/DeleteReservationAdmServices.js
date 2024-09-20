@@ -22,6 +22,11 @@ class DeleteReservationAdmServices {
             if (!reservation_id) {
                 throw new Error("Digite a reserva.");
             }
+            const deleteGuest = yield prisma_1.default.guest.deleteMany({
+                where: {
+                    reservation_id: reservation_id
+                }
+            });
             const reservationExist = yield prisma_1.default.reservation.findFirst({
                 where: {
                     id: reservation_id

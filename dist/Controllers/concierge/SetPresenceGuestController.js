@@ -9,16 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GuestAddController = void 0;
-const GuestAddServices_1 = require("../../Services/reservationUser/GuestAddServices");
-class GuestAddController {
+exports.SetPresenceGuestController = void 0;
+const SetPresenceGuestServices_1 = require("../../Services/concierge/SetPresenceGuestServices");
+class SetPresenceGuestController {
     handle(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { createGuest } = req.body;
-            const guestAddServices = new GuestAddServices_1.GuestAddServices();
-            const addConvidados = yield guestAddServices.execute(createGuest);
-            return res.json(addConvidados);
+            const { id, value } = req.body;
+            const setPresence = new SetPresenceGuestServices_1.SetPresenceGuestServices();
+            const response = yield setPresence.execute({
+                id, value
+            });
+            return res.json(response);
         });
     }
 }
-exports.GuestAddController = GuestAddController;
+exports.SetPresenceGuestController = SetPresenceGuestController;

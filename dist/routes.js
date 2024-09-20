@@ -54,16 +54,24 @@ const GuestAddController_1 = require("./Controllers/reservationUser/GuestAddCont
 const WaitListUserController_1 = require("./Controllers/reservationUser/WaitListUserController");
 const ListWithoutAvaliationUserController_1 = require("./Controllers/reservationUser/ListWithoutAvaliationUserController");
 const AvaliationUserController_1 = require("./Controllers/reservationUser/AvaliationUserController");
+const DeleteGuestController_1 = require("./Controllers/reservationUser/DeleteGuestController");
 // adm import agendamento ---------------------------------------------------------------
 const NewReservationsAdmController_1 = require("./Controllers/reservationAdm/NewReservationsAdmController");
 const SetNewReservationController_1 = require("./Controllers/reservationAdm/SetNewReservationController");
 const ListReservationsTrueController_1 = require("./Controllers/reservationAdm/ListReservationsTrueController");
 const ListAllTaxedAgendamentoController_1 = require("./Controllers/reservationAdm/ListAllTaxedAgendamentoController");
-const ListGuestController_1 = require("./Controllers/reservationAdm/ListGuestController");
 const DeleteReservationAdmController_1 = require("./Controllers/reservationAdm/DeleteReservationAdmController");
-//----------------------------------------------------------------------------------//
+// concierge import ---------------------------------------------------------------
+const AuthConciergeController_1 = require("./Controllers/concierge/AuthConciergeController");
+const FilterOldReservationsController_1 = require("./Controllers/concierge/FilterOldReservationsController");
+const FilterFutureReservationsController_1 = require("./Controllers/concierge/FilterFutureReservationsController");
+const FilterTodayReservationsController_1 = require("./Controllers/concierge/FilterTodayReservationsController");
+const FilterByIdReservationController_1 = require("./Controllers/concierge/FilterByIdReservationController");
+const SetPresenceGuestController_1 = require("./Controllers/concierge/SetPresenceGuestController");
+//---------------------------------middlewares----------------------------------------//
 const AdmMiddlewares_1 = __importDefault(require("./Middlewares/AdmMiddlewares"));
 const UserMiddlewares_1 = __importDefault(require("./Middlewares/UserMiddlewares"));
+const ConciergeMiddleware_1 = __importDefault(require("./Middlewares/ConciergeMiddleware"));
 const router = (0, express_1.Router)();
 exports.router = router;
 // routes adm ---------------------------------------------------------------------
@@ -108,6 +116,7 @@ router.delete("/reservations", UserMiddlewares_1.default, new DeleteReservationU
 router.get("/myreservations", UserMiddlewares_1.default, new MyAgendamentosUserController_1.MyAgendamentosUserController().handle);
 router.get("/noavaliation", UserMiddlewares_1.default, new ListWithoutAvaliationUserController_1.ListWithoutAvaliationUserController().handle);
 router.put("/guest", UserMiddlewares_1.default, new GuestAddController_1.GuestAddController().handle);
+router.delete("/guest", UserMiddlewares_1.default, new DeleteGuestController_1.DeleteGuestController().handle);
 router.post("/list", UserMiddlewares_1.default, new WaitListUserController_1.WaitListUserController().handle);
 router.put("/avaliation", UserMiddlewares_1.default, new AvaliationUserController_1.AvaliationUserController().handle);
 // routes adm agendamento ---------------------------------------------------------------------
@@ -115,5 +124,11 @@ router.get("/adm/reservations", AdmMiddlewares_1.default, new NewReservationsAdm
 router.put("/adm/setreservations", AdmMiddlewares_1.default, new SetNewReservationController_1.SetNewReservationController().handle);
 router.get("/adm/actreservations", AdmMiddlewares_1.default, new ListReservationsTrueController_1.ListReservationsTrueController().handle);
 router.get("/adm/taxed", AdmMiddlewares_1.default, new ListAllTaxedAgendamentoController_1.ListAllTaxedAgendamentoController().handle);
-router.post("/adm/guets", AdmMiddlewares_1.default, new ListGuestController_1.ListGuestController().handle);
 router.delete("/adm/reservation", AdmMiddlewares_1.default, new DeleteReservationAdmController_1.DeleteReservationAdmController().handle);
+// routes concierge imports
+router.post("/concierge", new AuthConciergeController_1.AuthConciergeController().handle);
+router.get("/concierge/oldreservations", ConciergeMiddleware_1.default, new FilterOldReservationsController_1.FilterOldReservationsController().handle);
+router.get("/concierge/futurereservations", ConciergeMiddleware_1.default, new FilterFutureReservationsController_1.FilterFutureReservationsController().handle);
+router.get("/concierge/todayreservations", ConciergeMiddleware_1.default, new FilterTodayReservationsController_1.FilterTodayReservationsController().handle);
+router.get('/concierge/reservation', ConciergeMiddleware_1.default, new FilterByIdReservationController_1.FilterByIdReservationController().handle);
+router.put('/concierge/presence', ConciergeMiddleware_1.default, new SetPresenceGuestController_1.SetPresenceGuestController().handle);
