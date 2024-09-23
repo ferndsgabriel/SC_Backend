@@ -292,13 +292,13 @@ class ViewDashboardServices {
             Apartaments: totalApartments ?? 0,
             Towers: totalTowers ?? 0,
             TotalCollectionDetails: [
-                { category: 'Reservas', value: totalCollectionReservations },
-                { category: 'Cancelamentos', value: totalCollectionTaxed },
-                { category: 'Limpezas', value: totalCollectionCleaningService }
+                { category: 'Concluídas', value: totalCollectionReservations },
+                { category: 'Taxadas', value: totalCollectionTaxed },
+                { category: 'Serviços de Limpeza', value: totalCollectionCleaningService }
             ],
             AllReservationMade: totalReservationsMade ?? 0,
             ReservationMadeDetails: [
-                { name: 'Finalizadas', value: totalReservationsFinished ?? 0 },
+                { name: 'Concluídas', value: totalReservationsFinished ?? 0 },
                 { name: 'Aprovadas', value: totalReservationsInProgress ?? 0 },
                 { name: 'Em Análise', value: totalReservationsUnderAnalysis ?? 0 },
                 { name: 'Canceladas', value: totalCanceledReservations ?? 0 }
