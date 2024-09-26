@@ -2,14 +2,15 @@ import prismaClient from "../../prisma";
 
 class FilterTodayReservationsServices {
     async execute() {
-        const addZero = (value) => (value < 10 ? `0${value}` : `${value}`);
+        const addZero = (value: number): string => {
+            return value < 10 ? `0${value}` : `${value}`;
+        };
 
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getMonth() + 1; 
         const day = date.getDate();
 
-        
         const data = `${year}${addZero(month)}${addZero(day)}`;
         const dateInt = parseInt(data);
 
