@@ -86,9 +86,9 @@ class ViewDashboardServices {
             }
         });
         const totalCanceledReservations = allCanceledReservationsInSystem.length ?? 0;
-
+        const reservationsMade = totalCanceledReservations + totalReservations
         // Total de reservas feitas (soma de reservas normais e canceladas)
-        const totalReservationsMade = (totalCanceledReservations + totalReservations) ?? 0;
+        const totalReservationsMade = reservationsMade ?? 0;
 
         // Reservas em análise (aplicando filtro de data)
         const reservationsUnderAnalysis = allReservationsInSystem.filter(item => item.reservationStatus === null);
@@ -136,14 +136,13 @@ class ViewDashboardServices {
 
         // Arrecadação (aplicando filtro de data)
         const taxRate = 80;
-        const totalCollectionTaxed = totalTaxedReservations * taxRate ?? 0;
+        const taxedTotal = totalTaxedReservations * taxRate;
+        const totalCollectionTaxed = taxedTotal ?? 0;
 
         const cleaningServiceRate = 80;
         const reservationsWithCleaningService = reservationsFinished.filter(item => item.cleaningService);
-        const totalCollectionCleaningService = reservationsWithCleaningService.length * cleaningServiceRate ?? 0;
-
-        const reservationRate = 100;
-        const totalCollectionReservations = totalReservationsFinished * reservationRate ?? 0;
+        const totalCleaning = reservationsWithCleaningService.length * cleaningServiceRate
+        const totalCollectionCleaningService = totalCleaning ?? 0;
 
         // Avaliações (aplicando filtro de data)
         const allAvaliation = await prismaClient.avaliations.findMany({
@@ -286,13 +285,12 @@ class ViewDashboardServices {
 
         // Resultados finais
         return {
-            TotalCollection: (totalCollectionCleaningService + totalCollectionTaxed + totalCollectionReservations).toFixed(2) ?? '0.00',
+            TotalCollection: (totalCollectionCleaningService + totalCollectionTaxed).toFixed(2) ?? '0.00',
             Users: totalUsers ?? 0,
             Adms: totalAdmins ?? 0,
             Apartaments: totalApartments ?? 0,
             Towers: totalTowers ?? 0,
             TotalCollectionDetails: [
-                { category: 'Concluídas', value: totalCollectionReservations },
                 { category: 'Taxadas', value: totalCollectionTaxed },
                 { category: 'Serviços de Limpeza', value: totalCollectionCleaningService }
             ],
@@ -303,7 +301,7 @@ class ViewDashboardServices {
                 { name: 'Em Análise', value: totalReservationsUnderAnalysis ?? 0 },
                 { name: 'Canceladas', value: totalCanceledReservations ?? 0 }
             ],
-            OccupancyRate: { occupied: parseFloat(averageGuestsPerReservation) ?? 0, limit: 30, attended: totalGuestsAttended ?? 0 },
+            OccupancyRate: { occupied: parseInt(averageGuestsPerReservation) ?? 0, limit: 30, attended: totalGuestsAttended ?? 0 },
             Payers: [
                 { category: 'Adimplentes', value: totalCompliantApartments ?? 0}, 
                 {category: 'Inadimplentes', value:totalDefaulterApartments ?? 0 }
