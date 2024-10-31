@@ -1,18 +1,15 @@
-import prismaClient from "../../prisma";
-
 class FilterTodayReservationsServices {
     async execute() {
         const addZero = (value: number): string => {
             return value < 10 ? `0${value}` : `${value}`;
         };
 
-        // Obter a data atual considerando o fuso horário de Brasília (UTC-3 ou UTC-2)
+        // Obter a data atual considerando o fuso horário de Brasília
         const today = new Date();
-        const utcOffset = today.getTimezoneOffset() * 60000; // em milissegundos
-        const brasiliaTime = new Date(today.getTime() + utcOffset + (3 * 3600000)); // Ajustando para UTC-3
+        const brasiliaTime = new Date(today.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
 
         const year = brasiliaTime.getFullYear();
-        const month = brasiliaTime.getMonth() + 1; // Lembre-se que o mês é zero-indexado
+        const month = brasiliaTime.getMonth() + 1; // Mês é zero-indexado
         const day = brasiliaTime.getDate();
 
         // Formato YYYYMMDD
