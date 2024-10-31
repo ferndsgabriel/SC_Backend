@@ -1,3 +1,5 @@
+import prismaClient from "../../prisma";
+
 class FilterTodayReservationsServices {
     async execute() {
         const addZero = (value: number): string => {
