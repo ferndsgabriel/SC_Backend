@@ -116,10 +116,13 @@ class ViewDashboardServices {
         });
         
         totalGuests = flatGuestsList.length;
-        
+
+        const averageGuestsAttended = reservationsWithGuests > 0 
+        ? ( totalGuestsAttended / reservationsWithGuests).toFixed(0)
+        : '0';
         
         const averageGuestsPerReservation = reservationsWithGuests > 0 
-        ? (totalGuests / reservationsWithGuests).toFixed(2)
+        ? (totalGuests / reservationsWithGuests).toFixed(0)
         : '0';
     
 
@@ -301,7 +304,7 @@ class ViewDashboardServices {
                 { name: 'Em Análise', value: totalReservationsUnderAnalysis ?? 0 },
                 { name: 'Canceladas', value: totalCanceledReservations ?? 0 }
             ],
-            OccupancyRate: { occupied: parseInt(averageGuestsPerReservation) ?? 0, limit: 30, attended: totalGuestsAttended ?? 0 },
+            OccupancyRate: { occupied: parseInt(averageGuestsPerReservation) ?? 0, limit: 30, attended: averageGuestsAttended ?? 0 },
             Payers: [
                 { category: 'Adimplentes', value: totalCompliantApartments ?? 0}, 
                 {category: 'Inadimplentes', value:totalDefaulterApartments ?? 0 }
